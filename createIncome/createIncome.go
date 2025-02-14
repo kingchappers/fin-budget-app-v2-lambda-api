@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -44,14 +43,15 @@ func init() {
 	dynamodbClient = dynamodb.NewFromConfig(cfg)
 }
 
-func createIncomeItem(ctx context.Context, income Income) error {
+func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutput, error) {
 	// Access environment variables
 	dynamodbTable := os.Getenv("INCOME_TABLE")
 	if dynamodbTable == "" {
 		log.Printf("INCOME_TABLE environment variable is not set")
-		return fmt.Errorf("missing required environment variable INCOME_TABLE")
+		return nil, fmt.Errorf("missing required environment variable INCOME_TABLE")
 	}
 
+	//Convert income to input item struct
 	incomeItem := map[string]types.AttributeValue{
 		"income_date":     &types.AttributeValueMemberS{Value: income.IncomeDate.String()},
 		"company":         &types.AttributeValueMemberS{Value: income.Company},
@@ -74,9 +74,9 @@ func createIncomeItem(ctx context.Context, income Income) error {
 	if err != nil {
 		log.Printf("Failed to add dynamoDB item: %v", err)
 		log.Printf("putItem response: %v", response)
-		return err
+		return response, err
 	}
-	return nil
+	return response, nil
 }
 
 func handleRequest(ctx context.Context, event json.RawMessage) error {
@@ -87,17 +87,13 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		return err
 	}
 
-	// Create the receipt content and key destination
-	receiptContent := fmt.Sprintf("OrderID: %s\nAmount: $%.2f\nItem: %s",
-		order.OrderID, order.Amount, order.Item)
-	key := "receipts/" + order.OrderID + ".txt"
-
-	// Upload the receipt to S3 using the helper method
-	if err := createIncomeItem(ctx, dynamodbTable, income); err != nil {
+	// Create income entry in the database using the helper method
+	if response, err := createIncomeItem(ctx, income); err != nil {
 		return err
+	} else {
+		log.Printf("Successfully added income %v", response)
 	}
 
-	log.Printf("Successfully processed order %s and stored receipt in S3 bucket %s", order.OrderID, dynamodbTable)
 	return nil
 }
 
