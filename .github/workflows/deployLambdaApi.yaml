@@ -11,6 +11,20 @@ on:
       - main
   
 jobs: 
+  build-go-package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.23.x' ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Build createIncome Package for Lambda
+        run: GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap createIncome.go
+
   terraform-plan:
     name: AWS Auth
     runs-on: ubuntu-24.04
