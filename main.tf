@@ -19,14 +19,16 @@ resource "aws_iam_role" "iam_for_lambda" {
 }
 
 resource "aws_lambda_function" "create_income" {
+  filename      = "./createIncome/createIncome.zip"
   function_name = "createIncome"
   role          = aws_iam_role.lambda_exec.arn
 
+  source_code_hash = filebase64sha256("./createIncome/createIncome.zip")
+
   runtime = "provided.al2023"
-  handler = "createIncome"
+  handler = "bootstrap"
 
   //Next items to define: 
-  // 2. The sha256 checksum of the zip file (source_code_hash)
   // 3. Environment variable for INCOME_TABLE used in the createIncome.go function
   // 4. Set the role for the lambda function (role)
 }
