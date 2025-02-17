@@ -26,7 +26,6 @@ resource "aws_lambda_function" "create_income" {
   handler = "createIncome"
 
   //Next items to define: 
-  // 1. Zip file for where the code will be (data "archive_file") - https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html
   // 2. The sha256 checksum of the zip file (source_code_hash)
   // 3. Environment variable for INCOME_TABLE used in the createIncome.go function
   // 4. Set the role for the lambda function (role)

@@ -23,7 +23,9 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - name: Build createIncome Package for Lambda
-        run: GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap createIncome.go
+        run: | 
+          GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap createIncome.go
+          zip createIncome.zip bootstrap
 
   terraform-plan:
     name: AWS Auth
