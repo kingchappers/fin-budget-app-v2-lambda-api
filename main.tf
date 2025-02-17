@@ -22,7 +22,7 @@ resource "aws_lambda_function" "create_income" {
   function_name = "createIncome"
   role          = aws_iam_role.lambda_exec.arn
 
-  runtime = "go1.x"
+  runtime = "provided.al2023"
   handler = "createIncome"
 
   //Next items to define: 
