@@ -34,11 +34,9 @@ resource "aws_lambda_function" "create_income" {
     }
   }
 
-  //Next items to define: 
-  // 4. Set the role for the lambda function to add values to dynamodb (role)
 }
 
-resource "aws_iam_policy" "create_income_dynamodb_policy" { 
+resource "aws_iam_policy" "create_income_dynamodb_policy" {
   name        = "create-income"
   description = "A policy to allow the lambda function to add values to the income table"
   policy      = data.aws_iam_policy_document.create_income_dynamodb.json
@@ -48,3 +46,7 @@ resource "aws_iam_role_policy_attachment" "test-attach" {
   role       = aws_iam_role.create_income_lambda_role.name
   policy_arn = aws_iam_policy.create_income_dynamodb_policy.arn
 }
+
+// Next Steps:
+// 1. Deploy and test...
+// 2. Formatting
