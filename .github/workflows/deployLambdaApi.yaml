@@ -60,6 +60,6 @@ jobs:
          terraform_version: 1.10.5
       - name: Terraform Plan
         run: |
-          ls -la
+          ls -la ./createIncome
           terraform init 
           terraform plan
