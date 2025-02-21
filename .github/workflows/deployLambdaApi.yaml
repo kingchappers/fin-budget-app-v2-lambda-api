@@ -35,6 +35,7 @@ jobs:
 
   terraform-plan:
     name: AWS Auth
+    needs: build-go-package
     runs-on: ubuntu-24.04
     steps: 
       - name: Checkout code
@@ -51,6 +52,5 @@ jobs:
          terraform_version: 1.10.5
       - name: Terraform Plan
         run: |
-          pwd
           terraform init 
           terraform plan
