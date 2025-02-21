@@ -35,7 +35,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: createIncome
-          path: ./createIncome.zip
+          path: ./createIncome/createIncome.zip
 
   terraform-plan:
     name: AWS Auth
