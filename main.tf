@@ -49,4 +49,5 @@ resource "aws_iam_role_policy_attachment" "test-attach" {
 
 // Next Steps:
 // 1. Deploy and test...
+#    a. 2 checks are failing and there are some non-blocking pipeline warnings on the Github pull request. Investigate and fix these issues.
 // 2. Formatting
