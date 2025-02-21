@@ -10,6 +10,10 @@ on:
     branches:
       - main
   
+permissions:
+  contents: read
+  pull-requests: write
+  
 jobs: 
   build-go-package:
     runs-on: ubuntu-24.04
@@ -56,5 +60,6 @@ jobs:
          terraform_version: 1.10.5
       - name: Terraform Plan
         run: |
+          ls -la
           terraform init 
           terraform plan
