@@ -66,5 +66,6 @@ jobs:
           createIncome-artifact: ${{ needs.build-go-package.outputs.createIncome-artifact }}
         run: |
           ls -la ./createIncome
+          file $createIncome-artifact
           terraform init 
           terraform plan
