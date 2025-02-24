@@ -21,7 +21,7 @@ jobs:
       matrix:
         go-version: [ '1.23.x' ]
     outputs:
-      createIncome-artifact: ${{ steps.createIncome-artifact.outputs.artifact-id }}
+      createIncomeArtifact: ${{ steps.createIncomeArtifact.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go ${{ matrix.go-version }}
@@ -39,7 +39,7 @@ jobs:
           GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap ./createIncome.go
           zip createIncome.zip bootstrap
       - uses: actions/upload-artifact@v4
-        id: createIncome-artifact
+        id: createIncomeArtifact
         with:
           name: createIncome
           path: ./createIncome/createIncome.zip
@@ -63,9 +63,9 @@ jobs:
          terraform_version: 1.10.5
       - name: Terraform Plan
         env:
-          createIncome-artifact: ${{ needs.build-go-package.outputs.createIncome-artifact }}
+          createIncomeArtifact: ${{ needs.build-go-package.outputs.createIncomeArtifact }}
         run: |
           ls -la ./createIncome
-          echo $createIncome-artifact
+          echo $createIncomeArtifact
           terraform init 
           terraform plan
