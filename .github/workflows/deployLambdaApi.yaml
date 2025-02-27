@@ -14,63 +14,6 @@ permissions:
   contents: read
   pull-requests: write
   
-# jobs: 
-#   build-go-package:
-#     runs-on: ubuntu-24.04
-#     strategy:
-#       matrix:
-#         go-version: [ '1.23.x' ]
-#     outputs:
-#       createIncomeArtifact: ${{ steps.createIncomeArtifact.outputs.artifact-id }}
-#     steps:
-#       - uses: actions/checkout@v4
-#       - name: Setup Go ${{ matrix.go-version }}
-#         uses: actions/setup-go@v5
-#         with:
-#           go-version: ${{ matrix.go-version }}
-#       - name: Build createIncome Package for Lambda
-#         run: | 
-#           cd ./createIncome
-#           GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-lambda-go/lambda"
-#           GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/aws"
-#           GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/config"
-#           GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/service/dynamodb"
-#           GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-#           GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap ./createIncome.go
-#           zip createIncome.zip bootstrap
-#           ls -la
-#       - uses: actions/upload-artifact@v4
-#         id: createIncomeArtifact
-#         with:
-#           name: createIncome
-#           path: ./createIncome/createIncome.zip
-
-#   terraform-plan:
-#     name: AWS Auth
-#     needs: build-go-package
-#     runs-on: ubuntu-24.04
-#     steps: 
-#       - name: Checkout code
-#         uses: actions/checkout@v3
-#       - name: Authenticate to AWS
-#         uses: aws-actions/configure-aws-credentials@v2
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: eu-west-2
-#       - name: Setup Terraform
-#         uses: hashicorp/setup-terraform@v3
-#         with:
-#          terraform_version: 1.10.5
-#       - name: Terraform Plan
-#         env:
-#           createIncomeArtifact: ${{ needs.build-go-package.outputs.createIncomeArtifact }}
-#         run: |
-#           ls -la ./createIncome
-#           echo $createIncomeArtifact
-#           terraform init 
-#           terraform plan
-
 jobs: 
   build-go-package:
     runs-on: ubuntu-24.04
@@ -96,8 +39,8 @@ jobs:
       - name: Build createIncome Package for Lambda
         run: | 
           /bin/bash ./build/buildGoPackage.sh
-          ls -la ./createIncome
-          # terraform init 
-          # terraform plan
+          ls -la
+          terraform init 
+          terraform plan
 
-# Review the contents of the SANS course lambda deployment functions and see if I just need to do this all in the same jobs (build and deploy Terraform in same job, and run it from a script to conserve space, so the job just contains the script I need to run)
+# 
