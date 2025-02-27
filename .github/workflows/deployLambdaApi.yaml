@@ -95,7 +95,7 @@ jobs:
           terraform_version: 1.10.5
       - name: Build createIncome Package for Lambda
         run: | 
-          ./build/buildGoPackage.sh
+          /bin/bash ./build/buildGoPackage.sh
           ls -la
           # terraform init 
           # terraform plan
