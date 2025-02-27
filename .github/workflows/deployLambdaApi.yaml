@@ -38,6 +38,7 @@ jobs:
           GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
           GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap ./createIncome.go
           zip createIncome.zip bootstrap
+          ls -la
       - uses: actions/upload-artifact@v4
         id: createIncomeArtifact
         with:
@@ -69,3 +70,5 @@ jobs:
           echo $createIncomeArtifact
           terraform init 
           terraform plan
+
+# Review the contents of the SANS course lambda deployment functions and see if I just need to do this all in the same jobs (build and deploy Terraform in same job, and run it from a script to conserve space, so the job just contains the script I need to run)
