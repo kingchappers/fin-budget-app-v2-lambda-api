@@ -96,7 +96,7 @@ jobs:
       - name: Build createIncome Package for Lambda
         run: | 
           /bin/bash ./build/buildGoPackage.sh
-          ls -la
+          ls -la ./createIncome
           # terraform init 
           # terraform plan
 

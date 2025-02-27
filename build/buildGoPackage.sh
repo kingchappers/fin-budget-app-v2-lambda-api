@@ -1,4 +1,4 @@
-cd ../createIncome
+cd ./createIncome
 GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-lambda-go/lambda"
 GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/aws"
 GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/config"
