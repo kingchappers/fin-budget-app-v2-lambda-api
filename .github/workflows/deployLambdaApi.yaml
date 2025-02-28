@@ -15,7 +15,7 @@ permissions:
   pull-requests: write
   
 jobs: 
-  build-go-package:
+  build-and-deploy-lambda:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
@@ -36,11 +36,10 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.10.5
-      - name: Build createIncome Package for Lambda
+      - name: Build createIncome package and deploy lambda
         run: | 
           /bin/bash ./build/buildGoPackage.sh
-          ls -la
           terraform init 
           terraform plan
-
-#
+          terraform validate
+          terraform apply -auto-approve

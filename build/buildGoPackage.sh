@@ -6,4 +6,3 @@ GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/service/dynamodb"
 GOOS=linux GOARCH=arm64 go get "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap ./createIncome.go
 zip createIncome.zip bootstrap
-ls -la
