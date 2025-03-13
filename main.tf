@@ -95,7 +95,7 @@ resource "aws_dynamodb_table" "income_table" {
   }
 
   attribute {
-    name = "transactionId"
+    name = "incomeId"
     type = "S"
   }
 
@@ -107,5 +107,5 @@ resource "aws_dynamodb_table" "income_table" {
 }
 
 // Next Steps:
-// 1. Create a DynamoDB table, first for the new table
-// 2. Create another DynamoDB table for the expenses
+// 1. Check if Table is created
+// 2. Test Lambda can put item to table

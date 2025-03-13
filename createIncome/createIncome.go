@@ -24,7 +24,7 @@ type Income struct {
 	UserID         string    `json:"user_id"`
 	Category       string    `json:"category"`
 	Items          string    `json:"items"`
-	TransactionId  string    `json:"transaction_id"`
+	IncomeId       string    `json:"income_id"`
 }
 
 var (
@@ -61,7 +61,7 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 		"user_id":         &types.AttributeValueMemberS{Value: income.UserID},
 		"category":        &types.AttributeValueMemberS{Value: income.Category},
 		"items":           &types.AttributeValueMemberS{Value: income.Items},
-		"transaction_id":  &types.AttributeValueMemberS{Value: income.TransactionId},
+		"income_id":       &types.AttributeValueMemberS{Value: income.IncomeId},
 	}
 
 	input := &dynamodb.PutItemInput{
