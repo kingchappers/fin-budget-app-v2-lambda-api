@@ -56,41 +56,7 @@ resource "aws_dynamodb_table" "income_table" {
   range_key      = "incomeId"
 
   attribute {
-    name = "incomeDate"
-    type = "S"
-  }
-
-  attribute {
-    name = "company"
-    type = "S"
-  }
-
-  attribute {
-    name = "amount"
-    type = "N"
-  }
-  attribute {
-    name = "income_category"
-    type = "S"
-  }
-
-  attribute {
-    name = "notes"
-    type = "S"
-  }
-
-  attribute {
     name = "userId"
-    type = "S"
-  }
-
-  attribute {
-    name = "category"
-    type = "S"
-  }
-
-  attribute {
-    name = "items"
     type = "S"
   }
 
