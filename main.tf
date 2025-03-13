@@ -42,12 +42,70 @@ resource "aws_iam_policy" "create_income_dynamodb_policy" {
   policy      = data.aws_iam_policy_document.create_income_dynamodb.json
 }
 
-resource "aws_iam_role_policy_attachment" "test-attach" {
+resource "aws_iam_role_policy_attachment" "attach_create_income_policy" {
   role       = aws_iam_role.create_income_lambda_role.name
   policy_arn = aws_iam_policy.create_income_dynamodb_policy.arn
 }
 
+resource "aws_dynamodb_table" "income_table" {
+  name           = "incomeTable"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "userId"
+  range_key      = "incomeId"
+
+  attribute {
+    name = "incomeDate"
+    type = "S"
+  }
+
+  attribute {
+    name = "company"
+    type = "S"
+  }
+
+  attribute {
+    name = "amount"
+    type = "N"
+  }
+  attribute {
+    name = "income_category"
+    type = "S"
+  }
+
+  attribute {
+    name = "notes"
+    type = "S"
+  }
+
+  attribute {
+    name = "userId"
+    type = "S"
+  }
+
+  attribute {
+    name = "category"
+    type = "S"
+  }
+
+  attribute {
+    name = "items"
+    type = "S"
+  }
+
+  attribute {
+    name = "transactionId"
+    type = "S"
+  }
+
+  tags = {
+    Name        = "incomeTable"
+    Environment = "production"
+    App         = "fin-budget-app"
+  }
+}
+
 // Next Steps:
-// 1. Deploy and test...
-#    a. 2 checks are failing and there are some non-blocking pipeline warnings on the Github pull request. Investigate and fix these issues.
-// 2. Formatting
+// 1. Create a DynamoDB table, first for the new table
+// 2. Create another DynamoDB table for the expenses
