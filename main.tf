@@ -72,6 +72,3 @@ resource "aws_dynamodb_table" "income_table" {
   }
 }
 
-// Next Steps:
-// 1. Check if Table is created
-// 2. Test Lambda can put item to table
