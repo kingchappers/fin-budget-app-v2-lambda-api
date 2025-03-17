@@ -56,12 +56,12 @@ resource "aws_dynamodb_table" "income_table" {
   range_key      = "incomeId"
 
   attribute {
-    name = "userId"
+    name = "UserId"
     type = "S"
   }
 
   attribute {
-    name = "incomeId"
+    name = "IncomeId"
     type = "S"
   }
 
