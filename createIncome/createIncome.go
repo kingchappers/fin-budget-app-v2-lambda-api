@@ -72,7 +72,7 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 	response, err := dynamodbClient.PutItem(ctx, input)
 
 	if err != nil {
-		log.Printf("PutItemInput: %v", input.TableName)
+		log.Printf("PutItemInput: %v", *input.TableName)
 		log.Printf("Failed to add dynamoDB item: %v", err)
 		log.Printf("putItem response: %v", response)
 		return response, err
