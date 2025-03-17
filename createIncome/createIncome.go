@@ -16,15 +16,15 @@ import (
 )
 
 type Income struct {
-	IncomeDate     time.Time `json:"income_date"`
-	Company        string    `json:"company"`
-	Amount         float64   `json:"amount"`
-	IncomeCategory string    `json:"income_category"`
-	Notes          string    `json:"notes"`
+	IncomeDate     time.Time `json:"IncomeDate"`
+	Company        string    `json:"Company"`
+	Amount         float64   `json:"Amount"`
+	IncomeCategory string    `json:"IncomeCategory"`
+	Notes          string    `json:"Notes"`
 	UserId         string    `json:"UserId"`
-	Category       string    `json:"category"`
-	Items          string    `json:"items"`
-	IncomeId       string    `json:"income_id"`
+	Category       string    `json:"Category"`
+	Items          string    `json:"Items"`
+	IncomeId       string    `json:"IncomeId"`
 }
 
 var (
@@ -53,15 +53,15 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 
 	//Convert income to input item struct
 	incomeItem := map[string]types.AttributeValue{
-		"income_date":     &types.AttributeValueMemberS{Value: income.IncomeDate.String()},
-		"company":         &types.AttributeValueMemberS{Value: income.Company},
-		"amount":          &types.AttributeValueMemberN{Value: fmt.Sprintf("%.2f", income.Amount)},
-		"income_category": &types.AttributeValueMemberS{Value: income.IncomeCategory},
-		"notes":           &types.AttributeValueMemberS{Value: income.Notes},
+		"IncomeDate":     &types.AttributeValueMemberS{Value: income.IncomeDate.String()},
+		"Company":         &types.AttributeValueMemberS{Value: income.Company},
+		"Amount":          &types.AttributeValueMemberN{Value: fmt.Sprintf("%.2f", income.Amount)},
+		"IncomeCategory": &types.AttributeValueMemberS{Value: income.IncomeCategory},
+		"Notes":           &types.AttributeValueMemberS{Value: income.Notes},
 		"UserId":         &types.AttributeValueMemberS{Value: income.UserId},
-		"category":        &types.AttributeValueMemberS{Value: income.Category},
-		"items":           &types.AttributeValueMemberS{Value: income.Items},
-		"income_id":       &types.AttributeValueMemberS{Value: income.IncomeId},
+		"Category":        &types.AttributeValueMemberS{Value: income.Category},
+		"Items":           &types.AttributeValueMemberS{Value: income.Items},
+		"IncomeId":       &types.AttributeValueMemberS{Value: income.IncomeId},
 	}
 
 	input := &dynamodb.PutItemInput{
