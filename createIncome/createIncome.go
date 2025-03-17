@@ -21,7 +21,7 @@ type Income struct {
 	Amount         float64   `json:"amount"`
 	IncomeCategory string    `json:"income_category"`
 	Notes          string    `json:"notes"`
-	UserID         string    `json:"user_id"`
+	UserId         string    `json:"user_id"`
 	Category       string    `json:"category"`
 	Items          string    `json:"items"`
 	IncomeId       string    `json:"income_id"`
@@ -58,7 +58,7 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 		"amount":          &types.AttributeValueMemberN{Value: fmt.Sprintf("%.2f", income.Amount)},
 		"income_category": &types.AttributeValueMemberS{Value: income.IncomeCategory},
 		"notes":           &types.AttributeValueMemberS{Value: income.Notes},
-		"user_id":         &types.AttributeValueMemberS{Value: income.UserID},
+		"user_id":         &types.AttributeValueMemberS{Value: income.UserId},
 		"category":        &types.AttributeValueMemberS{Value: income.Category},
 		"items":           &types.AttributeValueMemberS{Value: income.Items},
 		"income_id":       &types.AttributeValueMemberS{Value: income.IncomeId},
@@ -72,7 +72,6 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 	response, err := dynamodbClient.PutItem(ctx, input)
 
 	if err != nil {
-		log.Printf("PutItemInput: %v", *input.TableName)
 		log.Printf("Failed to add dynamoDB item: %v", err)
 		log.Printf("putItem response: %v", response)
 		return response, err
