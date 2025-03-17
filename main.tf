@@ -54,7 +54,7 @@ resource "aws_dynamodb_table" "income_table" {
   write_capacity = 1
   hash_key       = "UserId"
   range_key      = "IncomeId"
- #test edit
+
   attribute {
     name = "UserId"
     type = "S"
