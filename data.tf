@@ -15,6 +15,6 @@ data "aws_iam_policy_document" "create_income_dynamodb" {
   statement {
     effect    = "Allow"
     actions   = ["dynamodb:PutItem"]
-    resources = ["arn:aws:dynamodb:eu-west-2:192350001975:table/testFinBudgetIncomeTable"]
+    resources = ["arn:aws:dynamodb:eu-west-2:192350001975:table/incomeTable"]
   }
 }

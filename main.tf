@@ -30,7 +30,7 @@ resource "aws_lambda_function" "create_income" {
 
   environment {
     variables = {
-      INCOME_TABLE = "testFinBudgetIncomeTable"
+      INCOME_TABLE = "incomeTable"
     }
   }
 
