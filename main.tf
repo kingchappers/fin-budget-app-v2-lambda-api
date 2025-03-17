@@ -52,8 +52,8 @@ resource "aws_dynamodb_table" "income_table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "userId"
-  range_key      = "incomeId"
+  hash_key       = "UserId"
+  range_key      = "IncomeId"
 
   attribute {
     name = "UserId"
