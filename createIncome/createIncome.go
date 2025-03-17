@@ -21,7 +21,7 @@ type Income struct {
 	Amount         float64   `json:"amount"`
 	IncomeCategory string    `json:"income_category"`
 	Notes          string    `json:"notes"`
-	UserId         string    `json:"user_id"`
+	UserId         string    `json:"UserId"`
 	Category       string    `json:"category"`
 	Items          string    `json:"items"`
 	IncomeId       string    `json:"income_id"`
