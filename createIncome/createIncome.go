@@ -58,7 +58,6 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 		"IncomeCategory": &types.AttributeValueMemberS{Value: income.IncomeCategory},
 		"Notes":           &types.AttributeValueMemberS{Value: income.Notes},
 		"UserId":         &types.AttributeValueMemberS{Value: income.UserId},
-		"Category":        &types.AttributeValueMemberS{Value: income.Category},
 		"Items":           &types.AttributeValueMemberS{Value: income.Items},
 		"IncomeId":       &types.AttributeValueMemberS{Value: income.IncomeId},
 	}
