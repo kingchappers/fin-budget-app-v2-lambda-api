@@ -22,7 +22,6 @@ type Income struct {
 	IncomeCategory string    `json:"IncomeCategory"`
 	Notes          string    `json:"Notes"`
 	UserId         string    `json:"UserId"`
-	Category       string    `json:"Category"`
 	Items          string    `json:"Items"`
 	IncomeId       string    `json:"IncomeId"`
 }
