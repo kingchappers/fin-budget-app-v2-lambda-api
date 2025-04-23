@@ -1,3 +1,4 @@
+#!/bin/bash
 cd ./createIncome
 GOOS=linux GOARCH=amd64 go get "github.com/aws/aws-lambda-go/lambda"
 GOOS=linux GOARCH=amd64 go get "github.com/aws/aws-sdk-go-v2/aws"
