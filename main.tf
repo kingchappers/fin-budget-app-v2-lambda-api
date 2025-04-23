@@ -88,3 +88,159 @@ resource "aws_dynamodb_table" "income_table" {
   }
 }
 
+######################################################################
+# Create API Gateway
+######################################################################
+
+resource "aws_api_gateway_rest_api" "fin_budget_api" {
+  name             = "fin-budget-api"
+  description      = "API for the fin budget app"
+  fail_on_warnings = true
+
+  tags = {
+    Name        = "fin-budget-api"
+    Environment = "production"
+    App         = "fin-budget-app"
+  }
+}
+
+resource "aws_lambda_permission" "api" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.create_income.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  # The "/*/*" portion grants access from any method on any resource
+  # within the API Gateway REST API.
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+}
+
+resource "aws_iam_role" "api_gateway_invoke" {
+  name               = "fin-budget-api-gateway-invocation-role"
+  path               = "/"
+  description        = "IAM Role for API Gateway Authorizer invocations"
+  assume_role_policy = data.aws_iam_policy_document.api_gateway_assume_role.json
+}
+
+resource "aws_iam_policy" "api_gateway_invoke" {
+  name        = "fin-budget-api-gateway-invocation-policy"
+  path        = "/"
+  description = "IAM Policy for API Gateway Authorizer invocations"
+  policy      = data.aws_iam_policy_document.api_gateway_invoke.json
+
+  tags = {
+    Environment = "production"
+    App         = "fin-budget-app"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "api_gateway_invoke" {
+  role       = aws_iam_role.api_gateway_invoke.name
+  policy_arn = aws_iam_policy.api_gateway_invoke.arn
+}
+
+resource "aws_api_gateway_resource" "api" {
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  parent_id   = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
+  path_part   = "{proxy+}"
+}
+
+
+
+
+# CREATING A JWT AUTHORIZER FUNCTION FOR API GATEWAY ACCESS
+# RESEARCHING HOW BEST TO DO THIS WITH COGNITO AND A TOKEN BASED AUTHORISER
+
+# DONT USE A JWT AUTHORISER - USE A COGNITO USER POOL AUTHORISER INSTEAD
+# https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-integrate-with-cognito.html
+
+resource "aws_cognito_user_pool" "fin_budget_user_pool" {
+  name                     = "fin-budget-user-pool"
+  auto_verified_attributes = ["email"]
+  alias_attributes         = ["email", "preferred_username"]
+  mfa_configuration        = "ON"
+
+  account_recovery_setting {
+    recovery_mechanism {
+      priority = 1
+      name     = "verified_email"
+    }
+    recovery_mechanism {
+      priority = 2
+      name     = "verified_phone_number"
+    }
+  }
+
+  software_token_mfa_configuration {
+    enabled = true
+  }
+
+  password_policy {
+    minimum_length                   = 8
+    require_uppercase                = true
+    require_lowercase                = true
+    require_numbers                  = true
+    require_symbols                  = true
+    temporary_password_validity_days = 7
+  }
+
+  user_pool_tier = "LITE"
+
+  tags = {
+    Name        = "fin-budget-api"
+    Environment = "production"
+    App         = "fin-budget-app"
+  }
+}
+
+resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
+  name                                 = "fin-budget-user-pool-client"
+  user_pool_id                         = aws_cognito_user_pool.fin_budget_user_pool.id
+  callback_urls                        = ["https://localhost:8080", "https://main.d3m9wu6rhd9z99.amplifyapp.com/"]
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_scopes                 = ["email", "openid", "phone"]
+  supported_identity_providers         = ["COGNITO"]
+
+  generate_secret     = false
+  explicit_auth_flows = ["ADMIN_NO_SRP_AUTH", "USER_PASSWORD_AUTH"]
+
+}
+
+#### NEED TO ADD INFO TO LOGIN.VUE. Use the tf_deploy.sh from SANS as an example
+#### Create Export variables for the values I need. In the build script, read the values
+#### Use a command to store those values in an AWS parameter Store
+#### Read those values out as part of the github actions for the budget app build script
+#### Populate the environment variables and add those to the login.vue file
+resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {
+  identity_pool_name               = "fin_budget_cognito_identity_pool"
+  allow_unauthenticated_identities = false
+  allow_classic_flow               = false
+
+  cognito_identity_providers {
+    client_id               = aws_cognito_user_pool.fin_budget_user_pool.id
+    provider_name           = aws_cognito_user_pool.fin_budget_user_pool.name
+    server_side_token_check = false
+  }
+}
+
+resource "aws_api_gateway_authorizer" "cognito_authorizer" {
+  name                             = "fin-budget-api-gateway-cognito-authorizer"
+  type                             = "COGNITO_USER_POOLS"
+  rest_api_id                      = aws_api_gateway_rest_api.fin_budget_api.id
+  authorizer_result_ttl_in_seconds = 300
+  authorizer_credentials           = aws_iam_role.api_gateway_invoke.arn
+  identity_source                  = "method.request.header.Authorization"
+  provider_arns                    = [aws_cognito_user_pool.fin_budget_user_pool.arn]
+}
+
+### CONTINUING FROM SANS EXAMPLE FROM HERE
+resource "aws_api_gateway_method" "api" {
+  depends_on = [aws_lambda_permission.api]
+
+  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id   = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
+  http_method   = "ANY"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
+}
