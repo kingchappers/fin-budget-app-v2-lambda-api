@@ -291,3 +291,16 @@ resource "aws_api_gateway_integration" "api_root" {
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda_proxy.invoke_arn
 }
+
+resource "aws_api_gateway_deployment" "api" {
+  depends_on = [
+    aws_api_gateway_method.api_root,
+    aws_api_gateway_integration.api_root,
+    aws_api_gateway_method.api,
+    aws_api_gateway_integration.api,
+    aws_api_gateway_authorizer.cognito_authorizer,
+  ]
+
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  description = "dm-infrastructure-aws deployment"
+}
