@@ -89,6 +89,45 @@ resource "aws_dynamodb_table" "income_table" {
 }
 
 ######################################################################
+# Create Lambda Proxy Function
+######################################################################
+
+resource "aws_iam_role" "lambda_proxy" {
+  name               = "fin-budget-api-gateway-proxy-role"
+  path               = "/"
+  description        = "IAM role for DM API Gateway Lambda proxy"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+
+  tags = {
+    Product = "fin-budget"
+  }
+}
+
+resource "aws_lambda_function" "lambda_proxy" {
+  function_name    = "fin-budget-api-gateway-proxy"
+  description      = "API Gateway Lambda proxy to backend services"
+  runtime          = "nodejs18.x"
+  timeout          = 30
+  memory_size      = 128
+  handler          = "index.handler"
+  role             = aws_iam_role.lambda_proxy.arn
+  filename         = "${path.module}/functions/lambda-proxy.zip"
+  source_code_hash = filebase64sha256("${path.module}/functions/lambda-proxy.zip")
+  vpc_config {
+    subnet_ids         = [aws_subnet.app_private_a.id, aws_subnet.app_private_b.id]
+    security_group_ids = [aws_security_group.lambda_proxy.id]
+  }
+
+  tags = {
+    Product = "fin-budget"
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_proxy
+  ]
+}
+
+######################################################################
 # Create API Gateway
 ######################################################################
 
@@ -208,10 +247,8 @@ resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
 }
 
 #### NEED TO ADD INFO TO LOGIN.VUE. Use the tf_deploy.sh from SANS as an example
-#### Create Export variables for the values I need. In the build script, read the values
-#### Use a command to store those values in an AWS parameter Store
-#### Read those values out as part of the github actions for the budget app build script
-#### Populate the environment variables and add those to the login.vue file
+#### Continue API Gateway setup from here
+#### Remember to push commit from the main web app too
 resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {
   identity_pool_name               = "fin_budget_cognito_identity_pool"
   allow_unauthenticated_identities = false
@@ -235,7 +272,7 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
 }
 
 ### CONTINUING FROM SANS EXAMPLE FROM HERE
-resource "aws_api_gateway_method" "api" {
+resource "aws_api_gateway_method" "api_root" {
   depends_on = [aws_lambda_permission.api]
 
   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
@@ -243,4 +280,14 @@ resource "aws_api_gateway_method" "api" {
   http_method   = "ANY"
   authorization = "CUSTOM"
   authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
+}
+
+resource "aws_api_gateway_integration" "api_root" {
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
+  http_method = aws_api_gateway_method.api_root.http_method
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.lambda_proxy.invoke_arn
 }
