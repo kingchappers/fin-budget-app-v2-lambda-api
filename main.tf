@@ -19,7 +19,7 @@ provider "aws" {
 
 resource "aws_iam_role" "create_income_lambda_role" {
   name               = "iam_for_lambda"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
 ######################################################################
