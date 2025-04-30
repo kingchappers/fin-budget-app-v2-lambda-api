@@ -111,7 +111,7 @@ resource "aws_lambda_function" "lambda_proxy" {
   memory_size      = 128
   handler          = "index.handler"
   role             = aws_iam_role.lambda_proxy.arn
-  filename         = "${path.module}/functions/lambda-proxy.zip"
+  filename         = "${path.module}/lambdaProxy/lambda-proxy.zip"
   source_code_hash = filebase64sha256("${path.module}/functions/lambda-proxy.zip")
   vpc_config {
     subnet_ids         = [aws_subnet.app_private_a.id, aws_subnet.app_private_b.id]
