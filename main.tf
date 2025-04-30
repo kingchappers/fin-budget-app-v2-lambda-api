@@ -151,7 +151,7 @@ resource "aws_lambda_permission" "api" {
 
   # The "/*/*" portion grants access from any method on any resource
   # within the API Gateway REST API.
-  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/*"
 }
 
 resource "aws_iam_role" "api_gateway_invoke" {
@@ -165,7 +165,7 @@ resource "aws_iam_policy" "api_gateway_invoke" {
   name        = "fin-budget-api-gateway-invocation-policy"
   path        = "/"
   description = "IAM Policy for API Gateway Authorizer invocations"
-  policy      = data.aws_iam_policy_document.api_gateway_invoke.json
+  policy      = data.aws_iam_policy_document.api_gateway_assume_role.json
 
   tags = {
     Environment = "production"
