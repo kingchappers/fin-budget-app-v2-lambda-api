@@ -113,10 +113,6 @@ resource "aws_lambda_function" "lambda_proxy" {
   role             = aws_iam_role.lambda_proxy.arn
   filename         = "${path.module}/lambdaProxy/lambda-proxy.zip"
   source_code_hash = filebase64sha256("${path.module}/functions/lambda-proxy.zip")
-  vpc_config {
-    subnet_ids         = [aws_subnet.app_private_a.id, aws_subnet.app_private_b.id]
-    security_group_ids = [aws_security_group.lambda_proxy.id]
-  }
 
   tags = {
     Product = "fin-budget"
@@ -246,9 +242,6 @@ resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
 
 }
 
-#### NEED TO ADD INFO TO LOGIN.VUE. Use the tf_deploy.sh from SANS as an example
-#### Continue API Gateway setup from here
-#### Remember to push commit from the main web app too
 resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {
   identity_pool_name               = "fin_budget_cognito_identity_pool"
   allow_unauthenticated_identities = false
@@ -304,3 +297,7 @@ resource "aws_api_gateway_deployment" "api" {
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   description = "dm-infrastructure-aws deployment"
 }
+
+#### NEED TO configurre lambda_proxy lambda resource VPC settings - this is needed to access the network resource of the API Gateway
+#### Need to create a VPC for this
+#### Remember to push commit from the main web app too
