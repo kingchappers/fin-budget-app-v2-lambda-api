@@ -103,6 +103,11 @@ resource "aws_iam_role" "lambda_proxy" {
   }
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_proxy" {
+  role       = aws_iam_role.lambda_proxy.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 resource "aws_lambda_function" "lambda_proxy" {
   function_name    = "fin-budget-api-gateway-proxy"
   description      = "API Gateway Lambda proxy to backend services"
@@ -112,7 +117,7 @@ resource "aws_lambda_function" "lambda_proxy" {
   handler          = "index.handler"
   role             = aws_iam_role.lambda_proxy.arn
   filename         = "${path.module}/lambdaProxy/lambda-proxy.zip"
-  source_code_hash = filebase64sha256("${path.module}/functions/lambda-proxy.zip")
+  source_code_hash = filebase64sha256("${path.module}/lambdaProxy/lambda-proxy.zip")
 
   tags = {
     Product = "fin-budget"
