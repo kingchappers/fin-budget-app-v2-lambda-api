@@ -294,8 +294,6 @@ resource "aws_api_gateway_deployment" "api" {
   depends_on = [
     aws_api_gateway_method.api_root,
     aws_api_gateway_integration.api_root,
-    aws_api_gateway_method.api,
-    aws_api_gateway_integration.api,
     aws_api_gateway_authorizer.cognito_authorizer,
   ]
 
