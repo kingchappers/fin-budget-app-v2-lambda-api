@@ -21,13 +21,8 @@ data "aws_iam_policy_document" "create_income_dynamodb" {
 
 data "aws_iam_policy_document" "api_gateway_assume_role" {
   statement {
-
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["apigateway.amazonaws.com"]
-    }
+    resources = ["arn:aws:apigateway:eu-west-2:192350001975:*"]
   }
 }
