@@ -23,6 +23,5 @@ data "aws_iam_policy_document" "api_gateway_assume_role" {
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
-    resources = ["arn:aws:apigateway:eu-west-2:192350001975:*"]
   }
 }
