@@ -254,7 +254,7 @@ resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {
   allow_classic_flow               = false
 
   cognito_identity_providers {
-    client_id               = aws_cognito_user_pool.fin_budget_user_pool.id
+    client_id               = aws_cognito_user_pool.fin_budget_user_pool.client_id
     provider_name           = aws_cognito_user_pool.fin_budget_user_pool.name
     server_side_token_check = false
   }
