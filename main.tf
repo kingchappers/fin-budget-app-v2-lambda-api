@@ -175,8 +175,8 @@ resource "aws_iam_policy" "api_gateway_invoke_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "api_gateway_invoke" {
-  role       = aws_iam_role.api_gateway_invoke.name
-  policy_arn = aws_iam_policy.api_gateway_invoke.arn
+  role       = aws_iam_role.api_gateway_invoke_role.name
+  policy_arn = aws_iam_policy.api_gateway_invoke_policy.arn
 }
 
 resource "aws_api_gateway_resource" "api" {
@@ -265,7 +265,7 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   type                             = "COGNITO_USER_POOLS"
   rest_api_id                      = aws_api_gateway_rest_api.fin_budget_api.id
   authorizer_result_ttl_in_seconds = 300
-  authorizer_credentials           = aws_iam_role.api_gateway_invoke.arn
+  authorizer_credentials           = aws_iam_role.api_gateway_invoke_role.arn
   identity_source                  = "method.request.header.Authorization"
   provider_arns                    = [aws_cognito_user_pool.fin_budget_user_pool.arn]
 }
