@@ -21,6 +21,14 @@ data "aws_iam_policy_document" "create_income_dynamodb" {
 
 data "aws_iam_policy_document" "api_gateway_assume_role" {
   statement {
+    effect    = "Allow"
+    actions   = ["execute-api:Invoke"]
+    resources = ["arn:aws:execute-api:eu-west-2:192350001975:8v1x5j0g3f/*/GET/income"]
+  }
+}
+
+data "aws_iam_policy_document" "api_gateway_invoke_role_policy_document" {
+  statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
 
@@ -28,13 +36,5 @@ data "aws_iam_policy_document" "api_gateway_assume_role" {
       type        = "Service"
       identifiers = ["apigateway.amazonaws.com"]
     }
-  }
-}
-
-data "aws_iam_policy_document" "api_gateway_invoke_role_policy_document" {
-  statement {
-    effect    = "Allow"
-    actions   = ["execute-api:Invoke"]
-    resources = ["arn:aws:execute-api:eu-west-2:192350001975:8v1x5j0g3f/*/GET/income"]
   }
 }
