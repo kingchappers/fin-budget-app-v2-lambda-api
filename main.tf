@@ -159,7 +159,7 @@ resource "aws_iam_role" "api_gateway_invoke_role" {
   name               = "fin-budget-api-gateway-invocation-role"
   path               = "/"
   description        = "IAM Role for API Gateway Authorizer invocations"
-  assume_role_policy = data.aws_iam_policy_document.api_gateway_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.api_gateway_invoke_role_policy_document.json
 }
 
 resource "aws_iam_policy" "api_gateway_invoke_policy" {
