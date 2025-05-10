@@ -255,7 +255,7 @@ resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {
 
   cognito_identity_providers {
     client_id               = aws_cognito_user_pool_client.fin_budget_user_pool_client.id
-    provider_name           = aws_cognito_user_pool_client.fin_budget_user_pool_client.name
+    provider_name           = aws_cognito_user_pool.fin_budget_user_pool.endpoint
     server_side_token_check = false
   }
 }
