@@ -248,7 +248,7 @@ resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
 }
 
 resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {
-  depends_on = [ aws_cognito_user_pool.fin_budget_user_pool ]
+  depends_on = [ aws_cognito_user_pool.fin_budget_user_pool, aws_cognito_user_pool_client.fin_budget_user_pool_client ]
   identity_pool_name               = "fin_budget_cognito_identity_pool"
   allow_unauthenticated_identities = false
   allow_classic_flow               = false
