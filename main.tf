@@ -272,12 +272,12 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
 
 ### CONTINUING FROM SANS EXAMPLE FROM HERE
 resource "aws_api_gateway_method" "api_root" {
-  depends_on = [aws_lambda_permission.api]
+  depends_on = [aws_lambda_permission.api, aws_api_gateway_authorizer.cognito_authorizer,  aws_api_gateway_rest_api.fin_budget_api]
 
   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id   = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
   http_method   = "ANY"
-  authorization = "CUSTOM"
+  authorization = "COGNITO_USER_POOLS"
   authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
 }
 
