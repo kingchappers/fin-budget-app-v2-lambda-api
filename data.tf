@@ -11,6 +11,27 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_proxy_assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["lambda:InvokeFunction"]
+    resources = [
+      aws_lambda_function.create_income.arn
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "create_income_dynamodb" {
   statement {
     effect    = "Allow"
