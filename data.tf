@@ -25,6 +25,14 @@ data "aws_iam_policy_document" "api_gateway_assume_role" {
     actions   = ["execute-api:Invoke"]
     resources = ["arn:aws:execute-api:eu-west-2:192350001975:8v1x5j0g3f/*/GET/income"]
   }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["lambda:InvokeFunction"]
+    resources = [
+      aws_lambda_function.create_income.arn
+    ]
+  }
 }
 
 data "aws_iam_policy_document" "api_gateway_invoke_role_policy_document" {
