@@ -45,12 +45,11 @@ exports.handler = function (event, context, callback) {
             callback(null, response);
         });
     }).on('error', function (e) {
-        console.log('event: ' + event)
         console.log('Error invoking API: ' + e.message);
         let response = {
             statusCode: 500,
             headers: {},
-            body: JSON.stringify({ "message": "Error invoking API: " + e.message })
+            body: JSON.stringify({ "message": "Error invoking API: " + e.message + "/nrequest; " + requestBody})
         };
         callback(null, response);
     });
