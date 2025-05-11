@@ -49,7 +49,7 @@ exports.handler = function (event, context, callback) {
         let response = {
             statusCode: 500,
             headers: {},
-            body: JSON.stringify({ "message": "Error invoking API: " + e.message + "/nrequest; " + requestBody})
+            body: JSON.stringify({ "message": "Error invoking API: " + e.message + "/nrequest; " + request.requestBody})
         };
         callback(null, response);
     });
