@@ -23,7 +23,8 @@ data "aws_iam_policy_document" "api_gateway_assume_role" {
   statement {
     effect    = "Allow"
     actions   = ["execute-api:Invoke"]
-    resources = ["arn:aws:execute-api:eu-west-2:192350001975:8v1x5j0g3f/*/GET/income"]
+    resources = [aws_api_gateway_rest_api.fin_budget_api.execution_arn]
+    //"arn:aws:execute-api:eu-west-2:192350001975:8v1x5j0g3f/*/GET/income", 
   }
 
   statement {
