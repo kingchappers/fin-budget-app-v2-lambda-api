@@ -39,8 +39,6 @@ jobs:
       - name: Build createIncome package and deploy lambda
         run: | 
           /bin/bash ./build/buildGoPackage.sh
-          zip ./lambdaProxy/lambdaProxy.zip ./lambdaProxy/index.js
-          wait
           terraform init 
           terraform plan
           terraform validate
