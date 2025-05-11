@@ -147,7 +147,7 @@ resource "aws_api_gateway_rest_api" "fin_budget_api" {
 resource "aws_lambda_permission" "api" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.create_income.function_name
+  function_name = aws_lambda_function.lambda_proxy.function_name
   principal     = "apigateway.amazonaws.com"
 
   # The "/*/*" portion grants access from any method on any resource
