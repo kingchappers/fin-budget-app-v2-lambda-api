@@ -12,7 +12,6 @@ exports.handler = function (event, context, callback) {
     //request vars
     var requestPath = event.path
     var requestMethod = event.httpMethod
-    console.log('output request body: ' + requestBody);
     var requestBody = event.body != null ? JSON.stringify(JSON.parse(event.body)) : ''
     console.log('Received event: ' + requestMethod + ' ' + requestPath);
 
@@ -46,6 +45,7 @@ exports.handler = function (event, context, callback) {
             callback(null, response);
         });
     }).on('error', function (e) {
+        console.log('event: ' + event)
         console.log('Error invoking API: ' + e.message);
         let response = {
             statusCode: 500,
