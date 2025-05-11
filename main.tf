@@ -96,7 +96,7 @@ resource "aws_iam_role" "lambda_proxy" {
   name               = "fin-budget-api-gateway-proxy-role"
   path               = "/"
   description        = "IAM role for DM API Gateway Lambda proxy"
-  assume_role_policy = data.aws_iam_policy_document.lambda_proxy_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 
   tags = {
     Product = "fin-budget"
@@ -105,7 +105,7 @@ resource "aws_iam_role" "lambda_proxy" {
 
 resource "aws_iam_role_policy_attachment" "lambda_proxy" {
   role       = aws_iam_role.lambda_proxy.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaRole"
 }
 
 resource "aws_lambda_function" "lambda_proxy" {
