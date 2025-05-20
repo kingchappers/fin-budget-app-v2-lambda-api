@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
