@@ -107,7 +107,7 @@ resource "aws_api_gateway_rest_api" "fin_budget_api" {
 resource "aws_lambda_permission" "api" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_proxy.function_name
+  function_name = aws_lambda_function.create_income.function_name
   principal     = "apigateway.amazonaws.com"
 
   # The "/*/*" portion grants access from any method on any resource
@@ -117,14 +117,14 @@ resource "aws_lambda_permission" "api" {
 
 resource "aws_iam_role" "api_gateway_invoke_role" {
   name               = "fin-budget-api-gateway-invocation-role"
-  path               = "/"
+  path               = "/income/"
   description        = "IAM Role for API Gateway Authorizer invocations"
   assume_role_policy = data.aws_iam_policy_document.api_gateway_invoke_role_policy_document.json
 }
 
 resource "aws_iam_policy" "api_gateway_invoke_policy" {
   name        = "fin-budget-api-gateway-invocation-policy"
-  path        = "/"
+  path        = "/income/"
   description = "IAM Policy for API Gateway Authorizer invocations"
   policy      = data.aws_iam_policy_document.api_gateway_assume_role.json
 
@@ -248,7 +248,7 @@ resource "aws_api_gateway_integration" "api_root" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.lambda_proxy.invoke_arn
+  uri                     = aws_lambda_function.create_income.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "api" {
