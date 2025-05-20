@@ -60,6 +60,22 @@ resource "aws_iam_role_policy_attachment" "attach_create_income_policy" {
 }
 
 ######################################################################
+# Create and attach log policy for create income lambda function
+######################################################################
+
+resource "aws_iam_policy" "lambda_logging_policy" {
+  name        = "lambda-logging-policy"
+  description = "A policy to allow the lambda function to log to CloudWatch"
+  policy      = data.aws_iam_policy_document.lambda_logging.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.create_income_lambda_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
+}
+
+
+######################################################################
 #  Create dynamodb table for income
 ######################################################################
 

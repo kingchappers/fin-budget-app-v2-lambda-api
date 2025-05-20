@@ -11,6 +11,23 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_logging" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:CreateLogGroup",
+    ]
+
+    resources = [
+      "arn:aws:logs:eu-west-2:192350001975:*"
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "create_income_dynamodb" {
   statement {
     effect    = "Allow"
