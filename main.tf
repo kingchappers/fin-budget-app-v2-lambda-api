@@ -89,46 +89,6 @@ resource "aws_dynamodb_table" "income_table" {
 }
 
 ######################################################################
-# Create Lambda Proxy Function
-######################################################################
-
-resource "aws_iam_role" "lambda_proxy" {
-  name               = "fin-budget-api-gateway-proxy-role"
-  path               = "/"
-  description        = "IAM role for DM API Gateway Lambda proxy"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
-
-  tags = {
-    Product = "fin-budget"
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_proxy" {
-  role       = aws_iam_role.lambda_proxy.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaRole"
-}
-
-resource "aws_lambda_function" "lambda_proxy" {
-  function_name    = "fin-budget-api-gateway-proxy"
-  description      = "API Gateway Lambda proxy to backend services"
-  runtime          = "nodejs18.x"
-  timeout          = 30
-  memory_size      = 128
-  handler          = "index.handler"
-  role             = aws_iam_role.lambda_proxy.arn
-  filename         = "${path.module}/lambdaProxy/lambda-proxy.zip"
-  source_code_hash = filebase64sha256("${path.module}/lambdaProxy/lambda-proxy.zip")
-
-  tags = {
-    Product = "fin-budget"
-  }
-
-  depends_on = [
-    aws_iam_role_policy_attachment.lambda_proxy
-  ]
-}
-
-######################################################################
 # Create API Gateway
 ######################################################################
 
