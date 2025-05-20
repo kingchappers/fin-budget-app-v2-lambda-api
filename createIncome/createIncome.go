@@ -7,6 +7,8 @@ import (
 	"log"
 	"os"
 	"time"
+	"net/http"
+	"io"
 
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -32,7 +34,7 @@ var (
 )
 
 func init() {
-	// Initialize the S3 client outside of the handler, during the init phase
+	// Initialize the dynamoDB client outside of the handler, during the init phase
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion("eu-west-2"),
 	)
@@ -97,5 +99,11 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 }
 
 func main() {
-	lambda.Start(handleRequest)
+	http.HandleFunc("/income/", func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "Hello, you came from: ")
+		io.WriteString(w, r.URL.Path)
+	})
+
+	// lambda.Start(handleRequest)
+	lambda.Start(httpadapter.New(http.DefaultServeMux).ProxyWithContext)
 }
