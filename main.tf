@@ -133,14 +133,14 @@ resource "aws_lambda_permission" "api" {
 
 resource "aws_iam_role" "api_gateway_invoke_role" {
   name               = "fin-budget-api-gateway-invocation-role"
-  path               = "/income/"
+  path               = "/"
   description        = "IAM Role for API Gateway Authorizer invocations"
   assume_role_policy = data.aws_iam_policy_document.api_gateway_invoke_role_policy_document.json
 }
 
 resource "aws_iam_policy" "api_gateway_invoke_policy" {
   name        = "fin-budget-api-gateway-invocation-policy"
-  path        = "/income/"
+  path        = "/"
   description = "IAM Policy for API Gateway Authorizer invocations"
   policy      = data.aws_iam_policy_document.api_gateway_assume_role.json
 
