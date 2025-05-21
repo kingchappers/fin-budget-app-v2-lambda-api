@@ -155,14 +155,17 @@ resource "aws_iam_role_policy_attachment" "api_gateway_invoke" {
   policy_arn = aws_iam_policy.api_gateway_invoke_policy.arn
 }
 
-resource "aws_api_gateway_resource" "api" {
+resource "aws_api_gateway_resource" "income_api_resource" {
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   parent_id   = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
-  path_part   = "income/{proxy+}"
+  path_part   = "income"
 }
 
-
-
+resource "aws_api_gateway_resource" "income_api_greedy_resource" {
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  parent_id   = aws_api_gateway_resource.income_api_resource.id
+  path_part   = "{proxy+}"
+}
 
 # CREATING A JWT AUTHORIZER FUNCTION FOR API GATEWAY ACCESS
 # RESEARCHING HOW BEST TO DO THIS WITH COGNITO AND A TOKEN BASED AUTHORISER
