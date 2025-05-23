@@ -281,7 +281,7 @@ resource "aws_api_gateway_integration" "income_api_integration" {
   depends_on = [
     aws_api_gateway_rest_api.fin_budget_api,
     aws_api_gateway_resource.income_api_resource,
-    aws_api_gateway_method.api_root
+    aws_api_gateway_method.income_method
   ]
 
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
