@@ -227,7 +227,7 @@ resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
 }
 
 resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {
-  depends_on = [ aws_cognito_user_pool.fin_budget_user_pool, aws_cognito_user_pool_client.fin_budget_user_pool_client ]
+  depends_on                       = [aws_cognito_user_pool.fin_budget_user_pool, aws_cognito_user_pool_client.fin_budget_user_pool_client]
   identity_pool_name               = "fin_budget_cognito_identity_pool"
   allow_unauthenticated_identities = false
   allow_classic_flow               = false
@@ -251,7 +251,7 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
 
 ### CONTINUING FROM SANS EXAMPLE FROM HERE
 resource "aws_api_gateway_method" "api_root" {
-  depends_on = [aws_lambda_permission.api, aws_api_gateway_authorizer.cognito_authorizer,  aws_api_gateway_rest_api.fin_budget_api]
+  depends_on = [aws_lambda_permission.api, aws_api_gateway_authorizer.cognito_authorizer, aws_api_gateway_rest_api.fin_budget_api]
 
   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id   = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
@@ -261,6 +261,11 @@ resource "aws_api_gateway_method" "api_root" {
 }
 
 resource "aws_api_gateway_integration" "api_root" {
+  depends_on = [
+    aws_api_gateway_rest_api,
+    aws_api_gateway_resource.income_api_resource,
+    aws_api_gateway_method.api_root,
+  ]
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.income_api_resource.id
   http_method = aws_api_gateway_method.api_root.http_method
