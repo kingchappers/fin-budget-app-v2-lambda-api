@@ -251,21 +251,26 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
 
 ### CONTINUING FROM SANS EXAMPLE FROM HERE
 resource "aws_api_gateway_method" "api_root" {
-  depends_on = [aws_lambda_permission.api, aws_api_gateway_authorizer.cognito_authorizer, aws_api_gateway_rest_api.fin_budget_api]
+  depends_on = [
+    aws_lambda_permission.api,
+    aws_api_gateway_authorizer.cognito_authorizer,
+    aws_api_gateway_rest_api.fin_budget_api
+  ]
 
   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id   = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
-  http_method   = "ANY"
+  http_method   = "POST"
   authorization = "COGNITO_USER_POOLS"
   authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
 }
 
-resource "aws_api_gateway_integration" "api_root" {
+resource "aws_api_gateway_integration" "income_api_integration" {
   depends_on = [
     aws_api_gateway_rest_api.fin_budget_api,
     aws_api_gateway_resource.income_api_resource,
-    aws_api_gateway_method.api_root,
+    aws_api_gateway_method.api_root
   ]
+
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.income_api_resource.id
   http_method = aws_api_gateway_method.api_root.http_method
@@ -278,7 +283,7 @@ resource "aws_api_gateway_integration" "api_root" {
 resource "aws_api_gateway_deployment" "api" {
   depends_on = [
     aws_api_gateway_method.api_root,
-    aws_api_gateway_integration.api_root,
+    aws_api_gateway_integration.income_api_integration,
     aws_api_gateway_authorizer.cognito_authorizer,
   ]
 
