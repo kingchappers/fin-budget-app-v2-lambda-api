@@ -99,6 +99,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 }
 
 func main() {
+	log.Printf("test")
 	http.HandleFunc("/income/", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Hello, you came from: ")
 		io.WriteString(w, r.URL.Path)
