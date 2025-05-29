@@ -105,6 +105,6 @@ func main() {
 		io.WriteString(w, r.URL.Path)
 	})
 
-	// lambda.Start(handleRequest)
+	lambda.Start(handleRequest)
 	lambda.Start(httpadapter.New(http.DefaultServeMux).ProxyWithContext)
 }
