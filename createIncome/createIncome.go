@@ -65,7 +65,7 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 		"IncomeId":       &types.AttributeValueMemberS{Value: income.IncomeId},
 	}
 
-	log.Printf("Creating income item: %v", incomeItem)
+	log.Printf("Creating income item : %v", incomeItem)
 
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(dynamodbTable),
