@@ -65,6 +65,8 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 		"IncomeId":       &types.AttributeValueMemberS{Value: income.IncomeId},
 	}
 
+	log.Printf("Creating income item: %v", incomeItem)
+
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(dynamodbTable),
 		Item:      incomeItem,
@@ -72,7 +74,7 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 
 	response, err := dynamodbClient.PutItem(ctx, input)
 	log.Printf("putItem response: %v", response)
-	
+
 	if err != nil {
 		log.Printf("Failed to add dynamoDB item: %v", err)
 		log.Printf("putItem response: %v", response)
