@@ -107,6 +107,8 @@ func main() {
 		log.Printf("http request received: %s %s", r.Method, r.URL.Path)
 		io.WriteString(w, "Hello, you came from: ")
 		io.WriteString(w, r.URL.Path)
+		log.Printf("Request body: %s", r.Body)
+		log.Printf("FULL REQUEST %v", r.)
 		// IT LOOKS LIKE THIS FUNCTION JUST NEEDS TO SEND DATA OVER TO THE HANDLE REQUEST 
 		// LIKE THE BELOW. I NEED TO KNOW WHAT DATA IS COMING THROUGH AND HOW TO SEND
 		//  IT TO THE HANDLER
