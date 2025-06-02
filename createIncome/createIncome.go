@@ -4,18 +4,18 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"time"
-	"net/http"
-	"io"
 
-	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 )
 
 type Income struct {
@@ -56,12 +56,12 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 	//Convert income to input item struct
 	incomeItem := map[string]types.AttributeValue{
 		"IncomeDate":     &types.AttributeValueMemberS{Value: income.IncomeDate.String()},
-		"Company":         &types.AttributeValueMemberS{Value: income.Company},
-		"Amount":          &types.AttributeValueMemberN{Value: fmt.Sprintf("%.2f", income.Amount)},
+		"Company":        &types.AttributeValueMemberS{Value: income.Company},
+		"Amount":         &types.AttributeValueMemberN{Value: fmt.Sprintf("%.2f", income.Amount)},
 		"IncomeCategory": &types.AttributeValueMemberS{Value: income.IncomeCategory},
-		"Notes":           &types.AttributeValueMemberS{Value: income.Notes},
+		"Notes":          &types.AttributeValueMemberS{Value: income.Notes},
 		"UserId":         &types.AttributeValueMemberS{Value: income.UserId},
-		"Items":           &types.AttributeValueMemberS{Value: income.Items},
+		"Items":          &types.AttributeValueMemberS{Value: income.Items},
 		"IncomeId":       &types.AttributeValueMemberS{Value: income.IncomeId},
 	}
 
@@ -109,10 +109,27 @@ func main() {
 		io.WriteString(w, r.URL.Path)
 		log.Printf("Request body: %s", r.Body)
 		log.Printf("FULL REQUEST HEADER: %v", r.Header)
-		// IT LOOKS LIKE THIS FUNCTION JUST NEEDS TO SEND DATA OVER TO THE HANDLE REQUEST 
+		// IT LOOKS LIKE THIS FUNCTION JUST NEEDS TO SEND DATA OVER TO THE HANDLE REQUEST
 		// LIKE THE BELOW. I NEED TO KNOW WHAT DATA IS COMING THROUGH AND HOW TO SEND
 		//  IT TO THE HANDLER
 		log.Printf("Hello, you came from: %v", w)
+
+		var income Income
+		if err := json.NewDecoder(r.Body).Decode(&income); err != nil {
+			http.Error(w, fmt.Sprintf("Failed to decode request body: %v", err), http.StatusBadRequest)
+			return
+		}
+
+		ctx := r.Context()
+		_, err := createIncomeItem(ctx, income)
+		if err != nil {
+			http.Error(w, "Failed to create income", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 	})
 
 	// lambda.Start()
