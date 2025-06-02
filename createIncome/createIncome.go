@@ -82,23 +82,23 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 	return response, nil
 }
 
-func handleRequest(ctx context.Context, event json.RawMessage) error {
-	// Parse the input event
-	var income Income
-	if err := json.Unmarshal(event, &income); err != nil {
-		log.Printf("Failed to unmarshal event: %v", err)
-		return err
-	}
+// func handleRequest(ctx context.Context, event json.RawMessage) error {
+// 	// Parse the input event
+// 	var income Income
+// 	if err := json.Unmarshal(event, &income); err != nil {
+// 		log.Printf("Failed to unmarshal event: %v", err)
+// 		return err
+// 	}
 
-	// Create income entry in the database using the helper method
-	if response, err := createIncomeItem(ctx, income); err != nil {
-		return err
-	} else {
-		log.Printf("Successfully added income %v", response)
-	}
+// 	// Create income entry in the database using the helper method
+// 	if response, err := createIncomeItem(ctx, income); err != nil {
+// 		return err
+// 	} else {
+// 		log.Printf("Successfully added income %v", response)
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func main() {
 	http.HandleFunc("/income", func(w http.ResponseWriter, r *http.Request) {
