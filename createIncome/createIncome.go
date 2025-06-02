@@ -102,17 +102,11 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 }
 
 func main() {
-	log.Printf("test")
 	http.HandleFunc("/income", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("http request received: %s %s", r.Method, r.URL.Path)
-		io.WriteString(w, "Hello, you came from: ")
-		io.WriteString(w, r.URL.Path)
-		log.Printf("Request body: %s", r.Body)
-		log.Printf("FULL REQUEST HEADER: %v", r.Header)
-		// IT LOOKS LIKE THIS FUNCTION JUST NEEDS TO SEND DATA OVER TO THE HANDLE REQUEST
-		// LIKE THE BELOW. I NEED TO KNOW WHAT DATA IS COMING THROUGH AND HOW TO SEND
-		//  IT TO THE HANDLER
-		log.Printf("Hello, you came from: %v", w)
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 
 		var income Income
 		if err := json.NewDecoder(r.Body).Decode(&income); err != nil {
@@ -132,8 +126,5 @@ func main() {
 		json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 	})
 
-	// lambda.Start()
-
-	// lambda.Start(handleRequest)
 	lambda.Start(httpadapter.New(http.DefaultServeMux).ProxyWithContext)
 }
