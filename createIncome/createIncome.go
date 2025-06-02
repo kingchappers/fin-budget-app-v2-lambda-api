@@ -115,6 +115,8 @@ func main() {
 		log.Printf("Hello, you came from: %v", w)
 	})
 
-	lambda.Start(handleRequest)
+	// lambda.Start()
+
+	// lambda.Start(handleRequest)
 	lambda.Start(httpadapter.New(http.DefaultServeMux).ProxyWithContext)
 }
