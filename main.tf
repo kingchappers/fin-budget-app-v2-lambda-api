@@ -304,6 +304,59 @@ resource "aws_api_gateway_deployment" "api" {
   description = "dm-infrastructure-aws deployment"
 }
 
-#### NEED TO configurre lambda_proxy lambda resource VPC settings - this is needed to access the network resource of the API Gateway
-#### Need to create a VPC for this
-#### Remember to push commit from the main web app too
+##########################################################################
+# Create the amplify app in the deployment
+# This is required so I can set the environment variables for the app
+# The SSM paramaters need to be stored with the naming format
+# /amplify/{your_app_id}/{your_backend_environment_name}/{your_parameter_name}
+# The app_id and backend environment name are generated and need to be stored as outputs so they can be used in the storeTerraformOutputs.sh script instead of hardcoding them
+# This could mean that I can remove the amplify directory from the repository
+##########################################################################
+
+resource "aws_amplify_app" "fin-budget-app-v2" {
+  name = "fin-budget-app-v2"
+  repository = "https://github.com/kingchappers/fin-budget-app-v2"
+
+  build_spec = <<-EOT
+    version: 1
+    backend:
+      phases:
+        build:
+          commands:
+            - npm ci --cache .npm --prefer-offline
+            - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - export COGNITO_USER_POOL_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_USER_POOL_ID" --with-decryption --query "Parameter.Value" --output text)
+            - export COGNITO_USER_POOL_CLIENT_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_USER_POOL_CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)
+            - export COGNITO_IDENTITY_POOL_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_IDENTITY_POOL_ID" --with-decryption --query "Parameter.Value" --output text)
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: .amplify-hosting
+        files:
+          - '**/*'
+      EOT
+
+  # The default rewrites and redirects added by the Amplify Console.
+  custom_rule {
+    source = "/<*>"
+    status = "404"
+    target = "/index.html"
+  }
+
+  environment_variables = {
+    INCOME_TABLE = aws_dynamodb_table.income_table.name
+  }
+
+  iam_service_role_arn = aws_iam_role.api_gateway_invoke_role.arn
+
+  tags = {
+    Name        = "fin-budget-app-v2"
+    Environment = "prod"
+    App         = "fin-budget-app-v2"
+  }
+}
