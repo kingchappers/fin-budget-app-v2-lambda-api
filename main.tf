@@ -313,50 +313,54 @@ resource "aws_api_gateway_deployment" "api" {
 # This could mean that I can remove the amplify directory from the repository
 ##########################################################################
 
-resource "aws_amplify_app" "fin-budget-app-v2" {
-  name = "fin-budget-app-v2"
-  repository = "https://github.com/kingchappers/fin-budget-app-v2"
+# resource "aws_amplify_app" "fin-budget-app-v2" {
+#   name = "fin-budget-app-v2"
+#   repository = "https://github.com/kingchappers/fin-budget-app-v2"
+  
+#   # GitHub personal access token
+#   # Need to provide a GitHub personal access token with repo access via a secret that Terraform can get - maybe use SSM
+#   access_token = "..."
 
-  build_spec = <<-EOT
-    version: 1
-    backend:
-      phases:
-        build:
-          commands:
-            - npm ci --cache .npm --prefer-offline
-            - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - export COGNITO_USER_POOL_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_USER_POOL_ID" --with-decryption --query "Parameter.Value" --output text)
-            - export COGNITO_USER_POOL_CLIENT_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_USER_POOL_CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)
-            - export COGNITO_IDENTITY_POOL_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_IDENTITY_POOL_ID" --with-decryption --query "Parameter.Value" --output text)
-        build:
-          commands:
-            - npm run build
-      artifacts:
-        baseDirectory: .amplify-hosting
-        files:
-          - '**/*'
-      EOT
+#   build_spec = <<-EOT
+#     version: 1
+#     backend:
+#       phases:
+#         build:
+#           commands:
+#             - npm ci --cache .npm --prefer-offline
+#             - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
+#     frontend:
+#       phases:
+#         preBuild:
+#           commands:
+#             - export COGNITO_USER_POOL_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_USER_POOL_ID" --with-decryption --query "Parameter.Value" --output text)
+#             - export COGNITO_USER_POOL_CLIENT_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_USER_POOL_CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)
+#             - export COGNITO_IDENTITY_POOL_ID=$(aws ssm get-parameter --name "/amplify/fin-budget/prod/COGNITO_IDENTITY_POOL_ID" --with-decryption --query "Parameter.Value" --output text)
+#         build:
+#           commands:
+#             - npm run build
+#       artifacts:
+#         baseDirectory: .amplify-hosting
+#         files:
+#           - '**/*'
+#       EOT
 
-  # The default rewrites and redirects added by the Amplify Console.
-  custom_rule {
-    source = "/<*>"
-    status = "404"
-    target = "/index.html"
-  }
+#   # The default rewrites and redirects added by the Amplify Console.
+#   custom_rule {
+#     source = "/<*>"
+#     status = "404"
+#     target = "/index.html"
+#   }
 
-  environment_variables = {
-    INCOME_TABLE = aws_dynamodb_table.income_table.name
-  }
+#   environment_variables = {
+#     INCOME_TABLE = aws_dynamodb_table.income_table.name
+#   }
 
-  iam_service_role_arn = aws_iam_role.api_gateway_invoke_role.arn
+#   iam_service_role_arn = aws_iam_role.api_gateway_invoke_role.arn
 
-  tags = {
-    Name        = "fin-budget-app-v2"
-    Environment = "prod"
-    App         = "fin-budget-app-v2"
-  }
-}
+#   tags = {
+#     Name        = "fin-budget-app-v2"
+#     Environment = "prod"
+#     App         = "fin-budget-app-v2"
+#   }
+# }
