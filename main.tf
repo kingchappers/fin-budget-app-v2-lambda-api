@@ -176,7 +176,7 @@ resource "aws_api_gateway_resource" "income_api_greedy_resource" {
 resource "aws_cognito_user_pool" "fin_budget_user_pool" {
   name                     = "fin-budget-user-pool"
   auto_verified_attributes = ["email"]
-  alias_attributes         = ["email", "preferred_username"]
+  alias_attributes         = ["email"]
   mfa_configuration        = "ON"
 
   account_recovery_setting {
