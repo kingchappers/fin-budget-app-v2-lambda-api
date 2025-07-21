@@ -203,6 +203,10 @@ resource "aws_cognito_user_pool" "fin_budget_user_pool" {
     temporary_password_validity_days = 7
   }
 
+  email_configuration {
+    email_sending_account = "COGNITO_DEFAULT"
+  }
+
   user_pool_tier = "LITE"
 
   tags = {
