@@ -79,7 +79,7 @@ data "aws_iam_policy_document" "fin_budget_cognito_authenticated_role_policy_doc
     condition {
       test     = "StringEquals"
       variable = "cognito-identity.amazonaws.com:aud"
-      values   = [aws_cognito_identity_pool.fin_budget_identity_pool.id]
+      values   = [aws_cognito_identity_pool.fin_budget_cognito_identity_pool.id]
     }
 
     condition {
@@ -98,8 +98,7 @@ statement {
         "dynamodb:Query"
       ]
       resources = [
-        aws_dynamodb_table.fin_budget_income_table.arn,
-        aws_dynamodb_table.fin_budget_expense_table.arn,
+        aws_dynamodb_table.income_table.arn,
       ]
     }
 
@@ -119,7 +118,7 @@ data "aws_iam_policy_document" "fin_budget_cognito_unauthenticated_role_policy_d
     condition {
       test     = "StringEquals"
       variable = "cognito-identity.amazonaws.com:aud"
-      values   = [aws_cognito_identity_pool.fin_budget_identity_pool.id]
+      values   = [aws_cognito_identity_pool.fin_budget_cognito_identity_pool.id]
     }
 
     condition {
