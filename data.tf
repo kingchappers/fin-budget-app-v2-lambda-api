@@ -70,7 +70,7 @@ data "aws_iam_policy_document" "fin_budget_cognito_authenticated_role_policy_doc
     effect = "Allow"
 
     principals {
-      type        = "Service"
+      type        = "Federated"
       identifiers = ["cognito-identity.amazonaws.com"]
     }
 
@@ -98,7 +98,7 @@ statement {
         "dynamodb:Query"
       ]
       resources = [
-        aws_dynamodb_table.income_table.arn,
+        aws_dynamodb_table.income_table.arn
       ]
     }
 
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "fin_budget_cognito_unauthenticated_role_policy_d
     effect = "Allow"
 
     principals {
-      type        = "Service"
+      type        = "Federated"
       identifiers = ["cognito-identity.amazonaws.com"]
     }
 
