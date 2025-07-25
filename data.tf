@@ -88,20 +88,21 @@ data "aws_iam_policy_document" "fin_budget_cognito_authenticated_role_policy_doc
       values   = ["authenticated"]
     }
   }
+}
 
-statement {
-      effect = "Allow"
-      actions = [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem",
-        "dynamodb:Query"
-      ]
-      resources = [
-        aws_dynamodb_table.income_table.arn
-      ]
-    }
-
+data "aws_iam_policy_document" "fin_budget_authenticated_user_permissions_policy_document" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:Query"
+    ]
+    resources = [
+      aws_dynamodb_table.income_table.arn
+    ]
+  }
 }
 
 data "aws_iam_policy_document" "fin_budget_cognito_unauthenticated_role_policy_document" {
