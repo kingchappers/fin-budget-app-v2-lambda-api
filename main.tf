@@ -243,6 +243,43 @@ resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {
   }
 }
 
+resource "aws_iam_role" "fin_budget_cognito_authenticated_role" {
+  name               = "fin-budget-cognito-authenticated-role"
+  description        = "IAM Role for authenticated users of the fin budget app"
+  assume_role_policy = data.aws_iam_policy_document.fin_budget_cognito_authenticated_role_policy_document.json
+}
+
+resource "aws_iam_policy" "fin_budget_authenticated_user_permissions_policy_document" {
+  name        = "fin-budget-authenticated-user-permissions-policy"
+  description = "IAM Policy for authenticated users of the fin budget app"
+  policy      = data.aws_iam_policy_document.fin_budget_authenticated_user_permissions_policy_document.json
+
+  tags = {
+    Environment = "production"
+    App         = "fin-budget-app"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "fin_budget_authenticated_user_permissions" {
+  role       = aws_iam_role.fin_budget_cognito_authenticated_role.name
+  policy_arn = aws_iam_policy.fin_budget_authenticated_user_permissions_policy_document.arn
+}
+
+resource "aws_iam_role" "fin_budget_cognito_unauthenticated_role" {
+  name               = "fin-budget-cognito-unauthenticated-role"
+  assume_role_policy = data.aws_iam_policy_document.fin_budget_cognito_unauthenticated_role_policy_document.json
+}
+
+# How do I set the role identity pool users assume when they sign in using terraform?
+resource "aws_cognito_identity_pool_roles_attachment" "fin_budget_cognito_role_attachment" {
+  identity_pool_id = aws_cognito_identity_pool.fin_budget_cognito_identity_pool.id
+
+  roles = {
+    authenticated   = aws_iam_role.fin_budget_cognito_authenticated_role.arn
+    unauthenticated = aws_iam_role.fin_budget_cognito_unauthenticated_role.arn
+  }
+}
+
 resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   name                             = "fin-budget-api-gateway-cognito-authorizer"
   type                             = "COGNITO_USER_POOLS"
