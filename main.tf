@@ -266,7 +266,7 @@ resource "aws_iam_role_policy_attachment" "fin_budget_authenticated_user_permiss
 }
 
 resource "aws_iam_role" "fin_budget_cognito_unauthenticated_role" {
-  name               = "fin-budget-cognito-authenticated-role"
+  name               = "fin-budget-cognito-unauthenticated-role"
   assume_role_policy = data.aws_iam_policy_document.fin_budget_cognito_unauthenticated_role_policy_document.json
 }
 
