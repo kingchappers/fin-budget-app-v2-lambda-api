@@ -410,6 +410,17 @@ resource "aws_api_gateway_deployment" "api" {
   description = "dm-infrastructure-aws deployment"
 }
 
+resource "aws_api_gateway_stage" "prod" {
+  stage_name    = "prod"
+  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+  deployment_id = aws_api_gateway_deployment.api.id
+
+  # Optional: enable logging, tracing, etc.
+  # variables = {
+  #   env = "production"
+  # }
+}
+
 ##########################################################################
 # Create the amplify app in the deployment
 # This is required so I can set the environment variables for the app
