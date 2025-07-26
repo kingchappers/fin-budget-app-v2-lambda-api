@@ -357,15 +357,19 @@ resource "aws_api_gateway_integration" "income_options_integration" {
 }
 
 resource "aws_api_gateway_integration_response" "income_options_response" {
+  depends_on = [aws_api_gateway_integration.income_options_integration]
+  
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.income_api_resource.id
   http_method = aws_api_gateway_method.income_options.http_method
   status_code = "200"
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,UserId'"
+    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
+    "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,POST,GET,PUT,DELETE'"
+    "method.response.header.Access-Control-Allow-Origin"      = "'*'"
+    "method.response.header.Access-Control-Max-Age"          = "'7200'"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 
   response_templates = {
@@ -390,9 +394,11 @@ resource "aws_api_gateway_method_response" "income_options_response" {
   }
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true
-    "method.response.header.Access-Control-Allow-Methods" = true
-    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Headers"     = true
+    "method.response.header.Access-Control-Allow-Methods"     = true
+    "method.response.header.Access-Control-Allow-Origin"      = true
+    "method.response.header.Access-Control-Max-Age"           = true
+    "method.response.header.Access-Control-Allow-Credentials" = true
   }
 }
 
@@ -414,6 +420,10 @@ resource "aws_api_gateway_stage" "prod" {
   stage_name    = "prod"
   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
   deployment_id = aws_api_gateway_deployment.api.id
+
+  variables = {
+    "cors" = "true"
+  }
 
   # Optional: enable logging, tracing, etc.
   # variables = {
