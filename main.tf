@@ -322,7 +322,7 @@ resource "aws_api_gateway_integration" "income_api_integration" {
   depends_on = [ aws_api_gateway_method.income_post_method ]
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.income_api_resource.id
-  http_method = aws_api_gateway_method.income_post_method.http_method
+  http_method = "POST"
 
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.create_income.invoke_arn
