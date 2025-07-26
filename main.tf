@@ -334,6 +334,62 @@ resource "aws_api_gateway_integration" "income_api_integration" {
   uri                     = aws_lambda_function.create_income.invoke_arn
 }
 
+resource "aws_api_gateway_method" "income_options" {
+  depends_on = [
+    aws_api_gateway_rest_api.fin_budget_api,
+    aws_api_gateway_resource.income_api_resource
+  ]
+
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_resource.income_api_resource.id
+  http_method = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "income_options_integration" {
+  depends_on = [
+    aws_api_gateway_rest_api.fin_budget_api,
+    aws_api_gateway_resource.income_api_resource,
+    aws_api_gateway_method.income_options
+  ]
+
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_resource.income_api_resource.id
+  http_method = aws_api_gateway_method.income_options.http_method
+
+  integration_http_method = "POST"
+  type                    = "MOCK"
+
+  request_templates = {
+    "application/json" = jsonencode({
+      statusCode = 200
+    })
+  }
+}
+
+resource "aws_api_gateway_method_response" "income_options_response" {
+  depends_on = [
+    aws_api_gateway_rest_api.fin_budget_api,
+    aws_api_gateway_resource.income_api_resource,
+    aws_api_gateway_method.income_options
+  ]
+
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_resource.income_api_resource.id
+  http_method = aws_api_gateway_method.income_options.http_method
+  status_code = "200"
+
+  response_models = {
+    "application/json" = "Empty"
+  }
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+  }
+}
+
 resource "aws_api_gateway_deployment" "api" {
   depends_on = [
     aws_api_gateway_method.api_root,
