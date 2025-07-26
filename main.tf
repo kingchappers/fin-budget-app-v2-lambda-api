@@ -340,30 +340,36 @@ resource "aws_api_gateway_method" "income_options" {
     aws_api_gateway_resource.income_api_resource
   ]
 
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  resource_id = aws_api_gateway_resource.income_api_resource.id
-  http_method = "OPTIONS"
+  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id   = aws_api_gateway_resource.income_api_resource.id
+  http_method   = "OPTIONS"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "income_options_integration" {
-  depends_on = [
-    aws_api_gateway_rest_api.fin_budget_api,
-    aws_api_gateway_resource.income_api_resource,
-    aws_api_gateway_method.income_options
-  ]
-
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.income_api_resource.id
   http_method = aws_api_gateway_method.income_options.http_method
-
-  integration_http_method = "POST"
-  type                    = "MOCK"
-
+  type        = "MOCK"
   request_templates = {
-    "application/json" = jsonencode({
-      statusCode = 200
-    })
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_integration_response" "income_options_response" {
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_resource.income_api_resource.id
+  http_method = aws_api_gateway_method.income_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,UserId'"
+  }
+
+  response_templates = {
+    "application/json" = ""
   }
 }
 
@@ -384,7 +390,7 @@ resource "aws_api_gateway_method_response" "income_options_response" {
   }
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
     "method.response.header.Access-Control-Allow-Methods" = true
     "method.response.header.Access-Control-Allow-Headers" = true
   }
@@ -393,6 +399,9 @@ resource "aws_api_gateway_method_response" "income_options_response" {
 resource "aws_api_gateway_deployment" "api" {
   depends_on = [
     aws_api_gateway_method.api_root,
+    aws_api_gateway_method.income_method,
+    aws_api_gateway_method.income_options,
+    aws_api_gateway_resource.income_api_resource,
     aws_api_gateway_integration.income_api_integration,
     aws_api_gateway_authorizer.cognito_authorizer,
   ]
@@ -413,7 +422,7 @@ resource "aws_api_gateway_deployment" "api" {
 # resource "aws_amplify_app" "fin-budget-app-v2" {
 #   name = "fin-budget-app-v2"
 #   repository = "https://github.com/kingchappers/fin-budget-app-v2"
-  
+
 #   # GitHub personal access token
 #   # Need to provide a GitHub personal access token with repo access via a secret that Terraform can get - maybe use SSM
 #   access_token = "..."
