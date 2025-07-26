@@ -126,9 +126,8 @@ resource "aws_lambda_permission" "api" {
   function_name = aws_lambda_function.create_income.function_name
   principal     = "apigateway.amazonaws.com"
 
-  # The "/*/*" portion grants access from any method on any resource
-  # within the API Gateway REST API.
-  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/*"
+  # More specific ARN that includes the stage and method
+  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/prod/POST/income"
 }
 
 resource "aws_iam_role" "api_gateway_invoke_role" {
