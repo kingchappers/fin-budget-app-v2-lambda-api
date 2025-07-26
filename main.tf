@@ -447,7 +447,7 @@ resource "aws_api_gateway_stage" "prod" {
 
 module "cors" {
   source  = "squidfunk/api-gateway-enable-cors/aws"
-  version = "0.3.1"
+  version = "0.3.3"
 
   api_id            = aws_api_gateway_rest_api.fin_budget_api.id
   api_resource_id   = aws_api_gateway_resource.income_api_resource.id
