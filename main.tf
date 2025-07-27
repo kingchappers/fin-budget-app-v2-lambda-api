@@ -283,7 +283,7 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   name                             = "fin-budget-api-gateway-cognito-authorizer"
   type                             = "COGNITO_USER_POOLS"
   rest_api_id                      = aws_api_gateway_rest_api.fin_budget_api.id
-  authorizer_credentials           = aws_iam_role.api_gateway_invoke_role.arn
+  # authorizer_credentials           = aws_iam_role.api_gateway_invoke_role.arn
   authorizer_result_ttl_in_seconds = 300
   identity_source                  = "method.request.header.Authorization"
   provider_arns                    = [aws_cognito_user_pool.fin_budget_user_pool.arn]
@@ -317,8 +317,11 @@ resource "aws_api_gateway_method" "income_post_method" {
   authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
 
   request_parameters = {
-    "method.request.header.Authorization" = true
+    "method.request.header.Authorization" = true,
+    "method.request.path.proxy" = true
   }
+
+  authorization_scopes = ["email", "openid"]
 }
 
 resource "aws_api_gateway_integration" "income_api_integration" {
