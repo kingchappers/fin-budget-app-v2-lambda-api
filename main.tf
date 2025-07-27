@@ -126,8 +126,8 @@ resource "aws_lambda_permission" "api" {
   function_name = aws_lambda_function.create_income.function_name
   principal     = "apigateway.amazonaws.com"
 
-  # More specific ARN that includes the stage and method
-  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/prod/POST/income"
+  # The following format is: arn:aws:execute-api:${region}:${account_id}:${api_id}/${stage_name}/${method}/${resource}
+  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/*/income"
 }
 
 resource "aws_iam_role" "api_gateway_invoke_role" {
@@ -283,8 +283,8 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   name                             = "fin-budget-api-gateway-cognito-authorizer"
   type                             = "COGNITO_USER_POOLS"
   rest_api_id                      = aws_api_gateway_rest_api.fin_budget_api.id
-  authorizer_result_ttl_in_seconds = 300
   authorizer_credentials           = aws_iam_role.api_gateway_invoke_role.arn
+  authorizer_result_ttl_in_seconds = 300
   identity_source                  = "method.request.header.Authorization"
   provider_arns                    = [aws_cognito_user_pool.fin_budget_user_pool.arn]
 }
@@ -315,6 +315,10 @@ resource "aws_api_gateway_method" "income_post_method" {
   http_method   = "POST"
   authorization = "COGNITO_USER_POOLS"
   authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
+
+  request_parameters = {
+    "method.request.header.Authorization" = true
+  }
 }
 
 resource "aws_api_gateway_integration" "income_api_integration" {
