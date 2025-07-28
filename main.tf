@@ -327,11 +327,8 @@ resource "aws_api_gateway_method" "income_post_method" {
   authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
 
   request_parameters = {
-    "method.request.header.Authorization" = true,
-    "method.request.path.proxy"           = true
+    "method.request.header.Authorization" = true
   }
-
-  authorization_scopes = ["email", "openid"]
 }
 
 resource "aws_api_gateway_integration" "income_api_integration" {
