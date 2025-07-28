@@ -429,8 +429,10 @@ resource "aws_api_gateway_deployment" "api" {
   depends_on = [
     aws_api_gateway_integration.income_api_integration,
     aws_api_gateway_integration.income_options_integration,
+    aws_api_gateway_integration_response.income_options_response,
     aws_api_gateway_method.income_post_method,
-    aws_api_gateway_method.income_options
+    aws_api_gateway_method.income_options,
+    aws_api_gateway_method.api_root
   ]
 
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
