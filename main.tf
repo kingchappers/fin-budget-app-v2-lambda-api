@@ -328,55 +328,14 @@ resource "aws_api_gateway_integration" "income_api_integration" {
   depends_on  = [aws_api_gateway_method.income_post_method]
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.income_api_resource.id
-  http_method = "POST"
+  http_method = aws_api_gateway_method.income_post_method.http_method
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.create_income.invoke_arn
-  
-  request_parameters = {
-    "integration.request.header.Authorization" = "method.request.header.Authorization"
-  }
 }
 
-#######################################################################
-# API Gateway Method Responses and Integration Responses - AI GENERATED
-#######################################################################
-
-resource "aws_api_gateway_method_response" "income_post_response" {
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  resource_id = aws_api_gateway_resource.income_api_resource.id
-  http_method = aws_api_gateway_method.income_post_method.http_method
-  status_code = "200"
-
-  response_models = {
-    "application/json" = "Empty"
-  }
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = true
-  }
-}
-
-resource "aws_api_gateway_integration_response" "income_post_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  resource_id = aws_api_gateway_resource.income_api_resource.id
-  http_method = aws_api_gateway_method.income_post_method.http_method
-  status_code = aws_api_gateway_method_response.income_post_response.status_code
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'*'"
-  }
-
-  depends_on = [
-    aws_api_gateway_integration.income_api_integration,
-    aws_api_gateway_method_response.income_post_response
-  ]
-}
-
-#######################################################################
-# AI GENERATED ABOVE
-#######################################################################
+# Note: For AWS_PROXY integrations, response configuration is handled automatically
 
 resource "aws_api_gateway_method" "income_options" {
   depends_on = [
@@ -468,16 +427,10 @@ resource "aws_api_gateway_gateway_response" "cors_4xx" {
 
 resource "aws_api_gateway_deployment" "api" {
   depends_on = [
-    aws_api_gateway_rest_api.fin_budget_api,
-    aws_api_gateway_resource.income_api_resource,
-    aws_api_gateway_method.income_post_method,
-    aws_api_gateway_method.income_options,
     aws_api_gateway_integration.income_api_integration,
     aws_api_gateway_integration.income_options_integration,
-    aws_api_gateway_method_response.income_post_response,
-    aws_api_gateway_integration_response.income_post_integration_response,
-    aws_api_gateway_method_response.income_options_response,
-    aws_api_gateway_integration_response.income_options_response
+    aws_api_gateway_method.income_post_method,
+    aws_api_gateway_method.income_options
   ]
 
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
@@ -485,11 +438,9 @@ resource "aws_api_gateway_deployment" "api" {
 
   triggers = {
     redeployment = sha1(jsonencode([
-      aws_api_gateway_resource.income_api_resource.id,
-      aws_api_gateway_method.income_post_method.id,
-      aws_api_gateway_integration.income_api_integration.id,
-      aws_api_gateway_method_response.income_post_response.id,
-      aws_api_gateway_integration_response.income_post_integration_response.id
+      aws_api_gateway_rest_api.fin_budget_api.body,
+      aws_api_gateway_integration.income_api_integration.uri,
+      aws_api_gateway_method.income_post_method.id
     ]))
   }
 
