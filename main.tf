@@ -280,9 +280,9 @@ resource "aws_cognito_identity_pool_roles_attachment" "fin_budget_cognito_role_a
 }
 
 resource "aws_api_gateway_authorizer" "cognito_authorizer" {
-  name                             = "fin-budget-api-gateway-cognito-authorizer"
-  type                             = "COGNITO_USER_POOLS"
-  rest_api_id                      = aws_api_gateway_rest_api.fin_budget_api.id
+  name        = "fin-budget-api-gateway-cognito-authorizer"
+  type        = "COGNITO_USER_POOLS"
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   # authorizer_credentials           = aws_iam_role.api_gateway_invoke_role.arn
   authorizer_result_ttl_in_seconds = 300
   identity_source                  = "method.request.header.Authorization"
@@ -318,14 +318,14 @@ resource "aws_api_gateway_method" "income_post_method" {
 
   request_parameters = {
     "method.request.header.Authorization" = true,
-    "method.request.path.proxy" = true
+    "method.request.path.proxy"           = true
   }
 
   authorization_scopes = ["email", "openid"]
 }
 
 resource "aws_api_gateway_integration" "income_api_integration" {
-  depends_on = [ aws_api_gateway_method.income_post_method ]
+  depends_on  = [aws_api_gateway_method.income_post_method]
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.income_api_resource.id
   http_method = "POST"
@@ -388,7 +388,7 @@ resource "aws_api_gateway_integration" "income_options_integration" {
 
 resource "aws_api_gateway_integration_response" "income_options_response" {
   depends_on = [aws_api_gateway_integration.income_options_integration]
-  
+
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.income_api_resource.id
   http_method = aws_api_gateway_method.income_options.http_method
@@ -412,8 +412,8 @@ EOF
 }
 
 resource "aws_api_gateway_gateway_response" "cors_4xx" {
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  status_code = "403"
+  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+  status_code   = "403"
   response_type = "DEFAULT_4XX"
 
   response_parameters = {
@@ -435,6 +435,18 @@ resource "aws_api_gateway_deployment" "api" {
 
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   description = "dm-infrastructure-aws deployment"
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.aws_api_gateway_resource.id,
+      aws_api_gateway_method.income_post_method.id,
+      aws_api_gateway_integration.income_api_integration.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_api_gateway_stage" "prod" {
