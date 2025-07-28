@@ -432,7 +432,8 @@ resource "aws_api_gateway_deployment" "api" {
     aws_api_gateway_integration_response.income_options_response,
     aws_api_gateway_method.income_post_method,
     aws_api_gateway_method.income_options,
-    aws_api_gateway_method.api_root
+    aws_api_gateway_method.api_root,
+    aws_api_gateway_method_response.income_options_response
   ]
 
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
