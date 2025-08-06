@@ -469,5 +469,6 @@ resource "aws_api_gateway_stage" "prod" {
   # Optional: enable logging, tracing, etc.
   # variables = {
   #   env = "production"
-  # }
+  # } 
+  # forcing api rebuild
 }
