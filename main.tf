@@ -127,7 +127,7 @@ resource "aws_lambda_permission" "api" {
   principal     = "apigateway.amazonaws.com"
 
   # The following format is: arn:aws:execute-api:${region}:${account_id}:${api_id}/${stage_name}/${method}/${resource}
-  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/*/income"
+  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/income"
 }
 
 resource "aws_iam_role" "api_gateway_invoke_role" {
