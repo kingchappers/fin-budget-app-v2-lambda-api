@@ -406,7 +406,7 @@ resource "aws_api_gateway_integration_response" "income_options_response" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
     "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,POST,GET,PUT,DELETE'"
-    "method.response.header.Access-Control-Allow-Origin"      = "'*'"
+    "method.response.header.Access-Control-Allow-Origin"      = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 
@@ -426,10 +426,10 @@ resource "aws_api_gateway_gateway_response" "cors_4xx" {
   response_type = "DEFAULT_4XX"
 
   response_parameters = {
-    "gatewayresponse.header.Access-Control-Allow-Origin"  = "'*'"
-    # "gatewayresponse.header.Access-Control-Allow-Origin"  = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
+    "gatewayresponse.header.Access-Control-Allow-Origin"  = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
     "gatewayresponse.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
     "gatewayresponse.header.Access-Control-Allow-Methods" = "'OPTIONS,POST,GET,PUT,DELETE'"
+    "gatewayresponse.header.Access-Control-Allow-Credentials" = "'true'"
   }
 }
 

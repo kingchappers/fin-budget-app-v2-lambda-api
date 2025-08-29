@@ -120,11 +120,18 @@ func main() {
 			return
 		}
 
+		// Handle preflight OPTIONS request
+        if r.Method == http.MethodOptions {
+            w.WriteHeader(http.StatusOK)
+            return
+        }
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "https://main.d3m9wu6rhd9z99.amplifyapp.com")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId")
 		w.Header().Set("Access-Control-Allow-Methods", "POST,GET,OPTIONS,PUT,DELETE")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 	})
 
