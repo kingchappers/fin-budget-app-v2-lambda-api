@@ -458,18 +458,18 @@ resource "aws_api_gateway_deployment" "api" {
   }
 }
 
-# resource "aws_api_gateway_stage" "prod" {
-#   stage_name    = "prod"
-#   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
-#   deployment_id = aws_api_gateway_deployment.api.id
+resource "aws_api_gateway_stage" "prod" {
+  stage_name    = "prod"
+  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+  deployment_id = aws_api_gateway_deployment.api.id
 
-#   variables = {
-#     "cors" = "true"
-#   }
+  variables = {
+    "cors" = "true"
+  }
 
-#   # Optional: enable logging, tracing, etc.
-#   # variables = {
-#   #   env = "production"
-#   # } 
-#   # forcing api rebuild
-# }
+  # Optional: enable logging, tracing, etc.
+  # variables = {
+  #   env = "production"
+  # } 
+  # forcing api rebuild
+}
