@@ -129,9 +129,9 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		w.Header().Set("Access-Control-Allow-Origin", "https://main.d3m9wu6rhd9z99.amplifyapp.com")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId")
-		w.Header().Set("Access-Control-Allow-Methods", "POST,GET,OPTIONS,PUT,DELETE")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,POST")
+		// w.Header().Set("Access-Control-Allow-Credentials", "true")
 		json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 	})
 
