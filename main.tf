@@ -403,7 +403,7 @@ resource "aws_api_gateway_integration_response" "income_options_response" {
   status_code = aws_api_gateway_method_response.income_options_response.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,Access-Control-Allow-Origin,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
     "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,POST'"
     "method.response.header.Access-Control-Allow-Origin"      = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
