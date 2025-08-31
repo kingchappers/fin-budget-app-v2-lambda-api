@@ -218,7 +218,7 @@ resource "aws_cognito_user_pool" "fin_budget_user_pool" {
 resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
   name                                 = "fin-budget-user-pool-client"
   user_pool_id                         = aws_cognito_user_pool.fin_budget_user_pool.id
-  callback_urls                        = ["https://localhost:8080", "https://main.d3m9wu6rhd9z99.amplifyapp.com/"]
+  callback_urls                        = ["https://localhost:8080", "https://main.d3m9wu6rhd9z99.amplifyapp.com"]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["email", "openid", "phone"]
