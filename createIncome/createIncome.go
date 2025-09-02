@@ -102,6 +102,19 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 
 func main() {
 	http.HandleFunc("/income", func(w http.ResponseWriter, r *http.Request) {
+		// Enable CORS
+		w.Header().Set("Access-Control-Allow-Origin", "https://main.d3m9wu6rhd9z99.amplifyapp.com")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+		// Handle preflight OPTIONS request
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		// Only allow POST method
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -127,11 +140,7 @@ func main() {
         }
 
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		w.Header().Set("Access-Control-Allow-Origin", "'https://main.d3m9wu6rhd9z99.amplifyapp.com'")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token")
-		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,POST")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.WriteHeader(http.StatusCreated)		
 		json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 	})
 
