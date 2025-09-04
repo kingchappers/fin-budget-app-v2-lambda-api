@@ -218,7 +218,7 @@ resource "aws_cognito_user_pool" "fin_budget_user_pool" {
 resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
   name                                 = "fin-budget-user-pool-client"
   user_pool_id                         = aws_cognito_user_pool.fin_budget_user_pool.id
-  callback_urls                        = ["https://localhost:8080", "https://main.d3m9wu6rhd9z99.amplifyapp.com/"]
+  callback_urls                        = ["https://localhost:8080", "https://main.d3m9wu6rhd9z99.amplifyapp.com"]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["email", "openid", "phone"]
@@ -356,6 +356,20 @@ resource "aws_api_gateway_method" "income_options" {
   authorization = "NONE"
 }
 
+resource "aws_api_gateway_integration" "income_options_integration" {
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_resource.income_api_resource.id
+  http_method = aws_api_gateway_method.income_options.http_method
+  type        = "MOCK"
+  request_templates = {
+    "application/json" = jsonencode(
+      {
+        statusCode = 200
+      }
+    )
+  }
+}
+
 resource "aws_api_gateway_method_response" "income_options_response" {
   depends_on = [
     aws_api_gateway_rest_api.fin_budget_api,
@@ -376,22 +390,7 @@ resource "aws_api_gateway_method_response" "income_options_response" {
     "method.response.header.Access-Control-Allow-Headers"     = true
     "method.response.header.Access-Control-Allow-Methods"     = true
     "method.response.header.Access-Control-Allow-Origin"      = true
-    "method.response.header.Access-Control-Max-Age"           = true
     "method.response.header.Access-Control-Allow-Credentials" = true
-  }
-}
-
-resource "aws_api_gateway_integration" "income_options_integration" {
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  resource_id = aws_api_gateway_resource.income_api_resource.id
-  http_method = aws_api_gateway_method.income_options.http_method
-  type        = "MOCK"
-  request_templates = {
-    "application/json" = jsonencode(
-      {
-        statusCode = 200
-      }
-    )
   }
 }
 
@@ -404,47 +403,47 @@ resource "aws_api_gateway_integration_response" "income_options_response" {
   status_code = aws_api_gateway_method_response.income_options_response.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
-    "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,POST,GET,PUT,DELETE'"
+    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,POST'"
     "method.response.header.Access-Control-Allow-Origin"      = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 
-  response_templates = {
-    "application/json" = <<EOF
-{
-  "statusCode": 200,
-  "message": "OK! Everything in order"
-}
-EOF
-  }
+#   response_templates = {
+#     "application/json" = <<EOF
+# {
+#   "statusCode": 200,
+#   "message": "OK! Everything in order"
+# }
+# EOF
+#   }
 }
 
-resource "aws_api_gateway_gateway_response" "cors_4xx" {
-  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
-  status_code   = "403"
-  response_type = "DEFAULT_4XX"
+# resource "aws_api_gateway_gateway_response" "cors_4xx" {
+#   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+#   status_code   = "403"
+#   response_type = "DEFAULT_4XX"
 
-  response_parameters = {
-    "gatewayresponse.header.Access-Control-Allow-Origin"  = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
-    "gatewayresponse.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
-    "gatewayresponse.header.Access-Control-Allow-Methods" = "'OPTIONS,POST,GET,PUT,DELETE'"
-    "gatewayresponse.header.Access-Control-Allow-Credentials" = "'true'"
-  }
-}
+#   response_parameters = {
+#     "gatewayresponse.header.Access-Control-Allow-Origin"  = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
+#     "gatewayresponse.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
+#     "gatewayresponse.header.Access-Control-Allow-Methods" = "'OPTIONS,POST,GET,PUT,DELETE'"
+#     "gatewayresponse.header.Access-Control-Allow-Credentials" = "'true'"
+#   }
+# }
 
 resource "aws_api_gateway_deployment" "api" {
   depends_on = [
     aws_api_gateway_integration.income_api_integration,
-    aws_api_gateway_integration.income_options_integration,
+    # aws_api_gateway_integration.income_options_integration,
     aws_api_gateway_integration.api_root,
     aws_api_gateway_method.income_post_method,
-    aws_api_gateway_method.income_options,
+    # aws_api_gateway_method.income_options,
     aws_api_gateway_method.api_root    
   ]
 
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  description = "dm-infrastructure-aws deployment"
+  description = "infrastructure deployment"
 
   triggers = {
     redeployment = sha1(jsonencode([
