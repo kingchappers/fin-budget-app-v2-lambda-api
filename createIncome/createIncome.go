@@ -129,7 +129,7 @@ func main() {
 		ctx := r.Context()
 		_, err := createIncomeItem(ctx, income)
 		if err != nil {
-			http.Error(w, "Failed to create income", http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Failed to create income: %v", err), http.StatusInternalServerError)
 			return
 		}
 
