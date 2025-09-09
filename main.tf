@@ -166,12 +166,6 @@ resource "aws_api_gateway_resource" "income_api_greedy_resource" {
   path_part   = "{proxy+}"
 }
 
-# CREATING A JWT AUTHORIZER FUNCTION FOR API GATEWAY ACCESS
-# RESEARCHING HOW BEST TO DO THIS WITH COGNITO AND A TOKEN BASED AUTHORISER
-
-# DONT USE A JWT AUTHORISER - USE A COGNITO USER POOL AUTHORISER INSTEAD
-# https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-integrate-with-cognito.html
-
 resource "aws_cognito_user_pool" "fin_budget_user_pool" {
   name                     = "fin-budget-user-pool"
   auto_verified_attributes = ["email"]
@@ -269,7 +263,6 @@ resource "aws_iam_role" "fin_budget_cognito_unauthenticated_role" {
   assume_role_policy = data.aws_iam_policy_document.fin_budget_cognito_unauthenticated_role_policy_document.json
 }
 
-# How do I set the role identity pool users assume when they sign in using terraform?
 resource "aws_cognito_identity_pool_roles_attachment" "fin_budget_cognito_role_attachment" {
   identity_pool_id = aws_cognito_identity_pool.fin_budget_cognito_identity_pool.id
 
@@ -283,7 +276,6 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   name        = "fin-budget-api-gateway-cognito-authorizer"
   type        = "COGNITO_USER_POOLS"
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  # authorizer_credentials           = aws_iam_role.api_gateway_invoke_role.arn
   authorizer_result_ttl_in_seconds = 300
   identity_source                  = "method.request.header.Authorization"
   provider_arns                    = [aws_cognito_user_pool.fin_budget_user_pool.arn]
@@ -408,29 +400,7 @@ resource "aws_api_gateway_integration_response" "income_options_response" {
     "method.response.header.Access-Control-Allow-Origin"      = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
-
-#   response_templates = {
-#     "application/json" = <<EOF
-# {
-#   "statusCode": 200,
-#   "message": "OK! Everything in order"
-# }
-# EOF
-#   }
 }
-
-# resource "aws_api_gateway_gateway_response" "cors_4xx" {
-#   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
-#   status_code   = "403"
-#   response_type = "DEFAULT_4XX"
-
-#   response_parameters = {
-#     "gatewayresponse.header.Access-Control-Allow-Origin"  = "'https://main.d3m9wu6rhd9z99.amplifyapp.com'"
-#     "gatewayresponse.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
-#     "gatewayresponse.header.Access-Control-Allow-Methods" = "'OPTIONS,POST,GET,PUT,DELETE'"
-#     "gatewayresponse.header.Access-Control-Allow-Credentials" = "'true'"
-#   }
-# }
 
 resource "aws_api_gateway_deployment" "api" {
   depends_on = [
@@ -465,10 +435,7 @@ resource "aws_api_gateway_stage" "prod" {
   variables = {
     "cors" = "true"
   }
-
-  # Optional: enable logging, tracing, etc.
-  # variables = {
-  #   env = "production"
-  # } 
-  # forcing api rebuild
 }
+
+# Figure out a way to automatically create a new deployment when the api changes
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_deployment
