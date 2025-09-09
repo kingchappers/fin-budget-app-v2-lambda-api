@@ -50,11 +50,11 @@ resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
   allowed_oauth_scopes                 = ["email", "openid", "phone"]
   supported_identity_providers         = ["COGNITO"]
 
-  generate_secret     = false
+  generate_secret = false
   explicit_auth_flows = [
     "ADMIN_NO_SRP_AUTH",
     "USER_PASSWORD_AUTH"
-]
+  ]
 }
 
 resource "aws_cognito_identity_pool" "fin_budget_cognito_identity_pool" {

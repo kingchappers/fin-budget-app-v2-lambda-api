@@ -27,9 +27,9 @@ resource "aws_api_gateway_resource" "income_api_greedy_resource" {
 }
 
 resource "aws_api_gateway_authorizer" "cognito_authorizer" {
-  name        = "fin-budget-api-gateway-cognito-authorizer"
-  type        = "COGNITO_USER_POOLS"
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  name                             = "fin-budget-api-gateway-cognito-authorizer"
+  type                             = "COGNITO_USER_POOLS"
+  rest_api_id                      = aws_api_gateway_rest_api.fin_budget_api.id
   authorizer_result_ttl_in_seconds = 300
   identity_source                  = "method.request.header.Authorization"
   provider_arns                    = [aws_cognito_user_pool.fin_budget_user_pool.arn]
@@ -159,7 +159,7 @@ resource "aws_api_gateway_deployment" "api" {
     aws_api_gateway_integration.income_api_integration,
     aws_api_gateway_integration.api_root,
     aws_api_gateway_method.income_post_method,
-    aws_api_gateway_method.api_root    
+    aws_api_gateway_method.api_root
   ]
 
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
