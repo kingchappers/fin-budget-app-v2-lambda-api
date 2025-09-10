@@ -45,8 +45,8 @@ data "aws_iam_policy_document" "api_gateway_assume_role" {
   }
 
   statement {
-    effect    = "Allow"
-    actions   = ["lambda:InvokeFunction"]
+    effect  = "Allow"
+    actions = ["lambda:InvokeFunction"]
     resources = [
       aws_lambda_function.create_income.arn
     ]
