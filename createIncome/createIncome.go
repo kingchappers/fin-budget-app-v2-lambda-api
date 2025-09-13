@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	"github.com/google/uuid"
 )
 
 type Income struct {
@@ -61,8 +62,10 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 		"Notes":          &types.AttributeValueMemberS{Value: income.Notes},
 		"UserId":         &types.AttributeValueMemberS{Value: income.UserId},
 		"Items":          &types.AttributeValueMemberS{Value: income.Items},
-		"IncomeId":       &types.AttributeValueMemberS{Value: income.IncomeId},
+		"IncomeId":       &types.AttributeValueMemberS{Value: uuid.NewString()},
 	}
+
+
 
 	log.Printf("Creating income item : %v", incomeItem)
 
