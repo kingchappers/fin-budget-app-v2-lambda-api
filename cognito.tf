@@ -50,6 +50,15 @@ resource "aws_cognito_user_pool_client" "fin_budget_user_pool_client" {
   allowed_oauth_scopes                 = ["email", "openid", "phone"]
   supported_identity_providers         = ["COGNITO"]
 
+
+  token_validity_units {
+    access_token = "hours"
+    id_token     = "hours"
+  }
+  
+  access_token_validity     = 24
+  id_token_validity         = 24
+
   generate_secret = false
   explicit_auth_flows = [
     "ADMIN_NO_SRP_AUTH",
