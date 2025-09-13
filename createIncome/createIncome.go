@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	"github.com/google/uuid"
 )
 
 type Income struct {
@@ -61,8 +62,10 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 		"Notes":          &types.AttributeValueMemberS{Value: income.Notes},
 		"UserId":         &types.AttributeValueMemberS{Value: income.UserId},
 		"Items":          &types.AttributeValueMemberS{Value: income.Items},
-		"IncomeId":       &types.AttributeValueMemberS{Value: income.IncomeId},
+		"IncomeId":       &types.AttributeValueMemberS{Value: uuid.NewString()},
 	}
+
+
 
 	log.Printf("Creating income item : %v", incomeItem)
 
@@ -81,24 +84,6 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 	}
 	return response, nil
 }
-
-// func handleRequest(ctx context.Context, event json.RawMessage) error {
-// 	// Parse the input event
-// 	var income Income
-// 	if err := json.Unmarshal(event, &income); err != nil {
-// 		log.Printf("Failed to unmarshal event: %v", err)
-// 		return err
-// 	}
-
-// 	// Create income entry in the database using the helper method
-// 	if response, err := createIncomeItem(ctx, income); err != nil {
-// 		return err
-// 	} else {
-// 		log.Printf("Successfully added income %v", response)
-// 	}
-
-// 	return nil
-// }
 
 func main() {
 	http.HandleFunc("/income", func(w http.ResponseWriter, r *http.Request) {
