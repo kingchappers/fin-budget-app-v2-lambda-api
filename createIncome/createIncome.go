@@ -65,8 +65,6 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 		"IncomeId":       &types.AttributeValueMemberS{Value: uuid.NewString()},
 	}
 
-
-
 	log.Printf("Creating income item : %v", incomeItem)
 
 	input := &dynamodb.PutItemInput{
@@ -119,13 +117,13 @@ func main() {
 		}
 
 		// Handle preflight OPTIONS request
-        if r.Method == http.MethodOptions {
-            w.WriteHeader(http.StatusOK)
-            return
-        }
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)		
+		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 	})
 
