@@ -19,7 +19,7 @@ resource "aws_lambda_function" "create_income" {
   }
 }
 
-resource "aws_lambda_permission" "api" {
+resource "aws_lambda_permission" "create_income_api_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.create_income.function_name
@@ -33,7 +33,7 @@ resource "aws_lambda_permission" "api" {
 # Get Income Lambda Function
 ######################################################################
 
-resource "aws_lambda_function" "create_income" {
+resource "aws_lambda_function" "get_income" {
   filename      = "./getIncome/getIncome.zip"
   function_name = "getIncome"
   role          = aws_iam_role.create_lambda_role.arn
@@ -50,10 +50,10 @@ resource "aws_lambda_function" "create_income" {
   }
 }
 
-resource "aws_lambda_permission" "api" {
+resource "aws_lambda_permission" "get_income_api_permissions" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.create_income.function_name
+  function_name = aws_lambda_function.get_income.function_name
   principal     = "apigateway.amazonaws.com"
 
   # The following format is: arn:aws:execute-api:${region}:${account_id}:${api_id}/${stage_name}/${method}/${resource}
