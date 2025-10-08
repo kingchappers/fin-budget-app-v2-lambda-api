@@ -3,7 +3,7 @@
 # Create the policy document for the lambda function to assume the role
 ######################################################################
 
-resource "aws_iam_role" "create_lambda_role" {
+resource "aws_iam_role" "lambda_role" {
   name               = "iam_for_lambda"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
@@ -19,8 +19,23 @@ resource "aws_iam_policy" "create_income_dynamodb_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "attach_create_income_policy" {
-  role       = aws_iam_role.create_lambda_role.name
+  role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.create_income_dynamodb_policy.arn
+}
+
+######################################################################
+# Create and attach dyanmodb policy for get income lambda function
+######################################################################
+
+resource "aws_iam_policy" "get_income_dynamodb_policy" {
+  name        = "getincome"
+  description = "IAM policy for DynamoDB access from Lambda"
+  policy      = data.aws_iam_policy_document.get_income_dynamodb.json
+}
+
+resource "aws_iam_role_policy_attachment" "attach_create_income_policy" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.get_income_dynamodb_policy.arn
 }
 
 ######################################################################
