@@ -14,18 +14,6 @@ resource "aws_api_gateway_rest_api" "fin_budget_api" {
   }
 }
 
-resource "aws_api_gateway_resource" "income_api_resource" {
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  parent_id   = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
-  path_part   = "income"
-}
-
-resource "aws_api_gateway_resource" "income_api_greedy_resource" {
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  parent_id   = aws_api_gateway_resource.income_api_resource.id
-  path_part   = "{proxy+}"
-}
-
 resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   name                             = "fin-budget-api-gateway-cognito-authorizer"
   type                             = "COGNITO_USER_POOLS"
@@ -37,7 +25,7 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
 
 resource "aws_api_gateway_method" "api_root" {
   depends_on = [
-    aws_lambda_permission.api,
+    aws_lambda_permission.create_income_api_permission,
     aws_api_gateway_authorizer.cognito_authorizer,
     aws_api_gateway_rest_api.fin_budget_api
   ]
@@ -59,34 +47,25 @@ resource "aws_api_gateway_integration" "api_root" {
   uri                     = aws_lambda_function.create_income.invoke_arn
 }
 
-resource "aws_api_gateway_method" "income_post_method" {
-  depends_on = [
-    aws_lambda_permission.api,
-    aws_api_gateway_authorizer.cognito_authorizer,
-    aws_api_gateway_rest_api.fin_budget_api
-  ]
+######################################################################
+# Create API Gateway's Income Resources
+######################################################################
 
-  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
-  resource_id   = aws_api_gateway_resource.income_api_resource.id
-  http_method   = "POST"
-  authorization = "COGNITO_USER_POOLS"
-  authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
-
-  request_parameters = {
-    "method.request.header.Authorization" = true
-  }
-}
-
-resource "aws_api_gateway_integration" "income_api_integration" {
-  depends_on  = [aws_api_gateway_method.income_post_method]
+resource "aws_api_gateway_resource" "income_api_resource" {
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  resource_id = aws_api_gateway_resource.income_api_resource.id
-  http_method = aws_api_gateway_method.income_post_method.http_method
-
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.create_income.invoke_arn
+  parent_id   = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
+  path_part   = "income"
 }
+
+resource "aws_api_gateway_resource" "income_api_greedy_resource" {
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  parent_id   = aws_api_gateway_resource.income_api_resource.id
+  path_part   = "{proxy+}"
+}
+
+######################################################################
+# Create API Gateway's Income OPTIONS Method
+######################################################################
 
 resource "aws_api_gateway_method" "income_options" {
   depends_on = [
@@ -154,9 +133,79 @@ resource "aws_api_gateway_integration_response" "income_options_response" {
   }
 }
 
+######################################################################
+# Create API Gateway's Income POST Method
+######################################################################
+
+resource "aws_api_gateway_method" "income_post_method" {
+  depends_on = [
+    aws_lambda_permission.create_income_api_permission,
+    aws_api_gateway_authorizer.cognito_authorizer,
+    aws_api_gateway_rest_api.fin_budget_api
+  ]
+
+  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id   = aws_api_gateway_resource.income_api_resource.id
+  http_method   = "POST"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
+
+  request_parameters = {
+    "method.request.header.Authorization" = true
+  }
+}
+
+resource "aws_api_gateway_integration" "income_api_post_integration" {
+  depends_on  = [aws_api_gateway_method.income_post_method]
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_resource.income_api_resource.id
+  http_method = aws_api_gateway_method.income_post_method.http_method
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.create_income.invoke_arn
+}
+
+######################################################################
+# Create API Gateway's Income GET Method
+######################################################################
+
+resource "aws_api_gateway_method" "income_get_method" {
+  depends_on = [
+    aws_lambda_permission.get_income_api_permission,
+    aws_api_gateway_authorizer.cognito_authorizer,
+    aws_api_gateway_rest_api.fin_budget_api
+  ]
+
+  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id   = aws_api_gateway_resource.income_api_resource.id
+  http_method   = "GET"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
+
+  request_parameters = {
+    "method.request.header.Authorization" = true
+  }
+}
+
+resource "aws_api_gateway_integration" "income_api_get_integration" {
+  depends_on  = [aws_api_gateway_method.income_get_method]
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_resource.income_api_resource.id
+  http_method = aws_api_gateway_method.income_get_method.http_method
+
+  integration_http_method = "GET"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.get_income.invoke_arn
+}
+
+######################################################################
+# Deploy API Stage to Gateway
+###################################################################### 
+
 resource "aws_api_gateway_deployment" "api" {
   depends_on = [
-    aws_api_gateway_integration.income_api_integration,
+    aws_api_gateway_integration.income_api_options_integration,
     aws_api_gateway_integration.api_root,
     aws_api_gateway_method.income_post_method,
     aws_api_gateway_method.api_root
@@ -168,7 +217,7 @@ resource "aws_api_gateway_deployment" "api" {
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_rest_api.fin_budget_api.body,
-      aws_api_gateway_integration.income_api_integration.uri,
+      aws_api_gateway_integration.income_api_options_integration.uri,
     ]))
   }
 
