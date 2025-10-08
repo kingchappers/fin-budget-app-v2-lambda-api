@@ -12,11 +12,11 @@ zip createIncome.zip bootstrap
 
 # Build and package the getIncome function
 
-cd ../getIncome
+cd ../getIncomes
 GOOS=linux GOARCH=amd64 go get "github.com/aws/aws-lambda-go/lambda"
 GOOS=linux GOARCH=amd64 go get "github.com/aws/aws-sdk-go-v2/aws"
 GOOS=linux GOARCH=amd64 go get "github.com/aws/aws-sdk-go-v2/config"
 GOOS=linux GOARCH=amd64 go get "github.com/aws/aws-sdk-go-v2/service/dynamodb"
 GOOS=linux GOARCH=amd64 go get "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o bootstrap ./getIncome.go
-zip getIncome.zip bootstrap
+GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o bootstrap ./getIncomes.go
+zip getIncomes.zip bootstrap
