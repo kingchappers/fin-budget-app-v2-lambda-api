@@ -38,7 +38,7 @@ resource "aws_iam_policy" "get_income_dynamodb_policy" {
   policy      = data.aws_iam_policy_document.get_income_dynamodb.json
 }
 
-resource "aws_iam_role_policy_attachment" "attach_create_income_policy" {
+resource "aws_iam_role_policy_attachment" "attach_get_income_policy" {
   role       = aws_iam_role.get_income_lambda_role.name
   policy_arn = aws_iam_policy.get_income_dynamodb_policy.arn
 }
