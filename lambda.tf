@@ -5,7 +5,7 @@
 resource "aws_lambda_function" "create_income" {
   filename      = "./createIncome/createIncome.zip"
   function_name = "createIncome"
-  role          = aws_iam_role.create_lambda_role.arn
+  role          = aws_iam_role.create_income_lambda_role.arn
 
   source_code_hash = filebase64sha256("./createIncome/createIncome.zip")
 
@@ -36,7 +36,7 @@ resource "aws_lambda_permission" "create_income_api_permission" {
 resource "aws_lambda_function" "get_income" {
   filename      = "./getIncome/getIncome.zip"
   function_name = "getIncome"
-  role          = aws_iam_role.create_lambda_role.arn
+  role          = aws_iam_role.get_income_lambda_role.arn
 
   source_code_hash = filebase64sha256("./getIncome/getIncome.zip")
 
