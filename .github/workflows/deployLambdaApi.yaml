@@ -36,7 +36,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.10.5
-      - name: Build createIncome package and deploy lambda
+      - name: Build Go packages and deploy lambda API
         run: | 
           /bin/bash ./build/buildGoPackage.sh
           terraform init 

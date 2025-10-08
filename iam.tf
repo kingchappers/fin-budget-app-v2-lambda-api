@@ -54,10 +54,19 @@ resource "aws_iam_policy" "lambda_logging_policy" {
   policy      = data.aws_iam_policy_document.lambda_logging.json
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_logs" {
-  role       = aws_iam_role.lambda_role.name
+resource "aws_iam_role_policy_attachment" "create_income_lambda_logs" {
+  role       = aws_iam_role.create_income_lambda_role.name
   policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
+
+resource "aws_iam_role_policy_attachment" "get_income_lambda_logs" {
+  role       = aws_iam_role.get_income_lambda_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
+}
+
+######################################################################
+# Create and attach policy for API Gateway to invoke Lambda functions
+######################################################################
 
 resource "aws_iam_role" "api_gateway_invoke_role" {
   name               = "fin-budget-api-gateway-invocation-role"
@@ -82,6 +91,10 @@ resource "aws_iam_role_policy_attachment" "api_gateway_invoke" {
   role       = aws_iam_role.api_gateway_invoke_role.name
   policy_arn = aws_iam_policy.api_gateway_invoke_policy.arn
 }
+
+######################################################################
+# Create and attach policies for Cognito Authenticated and Unauthenticated roles
+######################################################################
 
 resource "aws_iam_role" "fin_budget_cognito_authenticated_role" {
   name               = "fin-budget-cognito-authenticated-role"
