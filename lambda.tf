@@ -34,7 +34,7 @@ resource "aws_lambda_permission" "create_income_api_permission" {
 ######################################################################
 
 resource "aws_lambda_function" "get_income" {
-  filename      = "./getIncome/getIncome.zip"
+  filename      = "./getIncomes/getIncomes.zip"
   function_name = "getIncome"
   role          = aws_iam_role.get_income_lambda_role.arn
 
