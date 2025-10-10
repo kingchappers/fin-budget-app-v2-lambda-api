@@ -241,7 +241,9 @@ resource "aws_api_gateway_deployment" "api" {
       # CORS configuration
       aws_api_gateway_method_response.income_options_response.response_parameters,
       aws_api_gateway_integration_response.income_options_response.response_parameters,
-    ]))
+      ]),
+      timestamp()
+    )
   }
 
   lifecycle {
@@ -249,18 +251,19 @@ resource "aws_api_gateway_deployment" "api" {
   }
 }
 
-resource "aws_api_gateway_stage" "prod" {
-  stage_name    = "prod"
-  rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
-  deployment_id = aws_api_gateway_deployment.api.id
+# resource "aws_api_gateway_stage" "prod" {
+#   stage_name    = "prod"
+#   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
+#   deployment_id = aws_api_gateway_deployment.api.id
 
-  variables = {
-    "cors" = "true"
-  }
+#   variables = {
+#     "cors"    = "true"
+#     "version" = aws_api_gateway_deployment.api.id
+#   }
 
-  lifecycle {
-    ignore_changes = [
-      deployment_id
-    ]
-  }
-}
+#   lifecycle {
+#     ignore_changes = [
+#       deployment_id
+#     ]
+#   }
+# }
