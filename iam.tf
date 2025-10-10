@@ -4,7 +4,7 @@
 ######################################################################
 
 resource "aws_iam_role" "create_income_lambda_role" {
-  name               = "iam_for_lambda"
+  name               = "create_income_iam_lambda_role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
@@ -28,7 +28,7 @@ resource "aws_iam_role_policy_attachment" "attach_create_income_policy" {
 ######################################################################
 
 resource "aws_iam_role" "get_income_lambda_role" {
-  name               = "iam_for_lambda"
+  name               = "get_income_iam_lambda_role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
