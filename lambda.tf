@@ -38,7 +38,7 @@ resource "aws_lambda_function" "get_income" {
   function_name = "getIncome"
   role          = aws_iam_role.get_income_lambda_role.arn
 
-  source_code_hash = filebase64sha256("./getIncome/getIncome.zip")
+  source_code_hash = filebase64sha256("./getIncomes/getIncomes.zip")
 
   runtime = "provided.al2023"
   handler = "bootstrap"

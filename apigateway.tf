@@ -172,7 +172,7 @@ resource "aws_api_gateway_integration" "income_api_post_integration" {
 
 resource "aws_api_gateway_method" "income_get_method" {
   depends_on = [
-    aws_lambda_permission.get_income_api_permission,
+    aws_lambda_permission.get_income_api_permissions,
     aws_api_gateway_authorizer.cognito_authorizer,
     aws_api_gateway_rest_api.fin_budget_api
   ]
