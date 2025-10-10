@@ -220,7 +220,8 @@ resource "aws_api_gateway_deployment" "api" {
 
 
   triggers = {
-    redeployment = sha1(jsonencode([
+    redeployment = sha1(join(",", [
+      jsonencode([
       # REST API configuration
       aws_api_gateway_rest_api.fin_budget_api.body,
 
@@ -242,8 +243,8 @@ resource "aws_api_gateway_deployment" "api" {
       aws_api_gateway_method_response.income_options_response.response_parameters,
       aws_api_gateway_integration_response.income_options_response.response_parameters,
       ]),
-      timestamp()
-    )
+      timestamp() # Add this to force deployment on every apply
+    ]))
   }
 
   lifecycle {
