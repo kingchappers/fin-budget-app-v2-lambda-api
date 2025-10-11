@@ -214,7 +214,7 @@ resource "aws_api_gateway_deployment" "api" {
     aws_api_gateway_method.income_options,
     aws_api_gateway_method.api_root
   ]
-
+  
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   description = "Deployed at ${timestamp()}"
 
@@ -266,6 +266,5 @@ resource "aws_api_gateway_stage" "prod" {
     ignore_changes = [
       deployment_id
     ]
-    create_before_destroy = true
   }
 }
