@@ -133,8 +133,14 @@ func main() {
 
 		// var incomes []Income
 		var getIncomeParams GetIncomeParams
-		if err := json.NewDecoder(r.Body).Decode(&getIncomeParams); err != nil {
-			http.Error(w, fmt.Sprintf("Failed to decode request body: %v", err), http.StatusBadRequest)
+		// if err := json.NewDecoder(r.Body).Decode(&getIncomeParams); err != nil {
+		// 	http.Error(w, fmt.Sprintf("Failed to decode request body: %v", err), http.StatusBadRequest)
+		// 	return
+		// }
+
+		getIncomeParams.UserId = r.Header.Get("UserId")
+		if getIncomeParams.UserId == "" {
+			http.Error(w, "Missing UserId header", http.StatusBadRequest)
 			return
 		}
 
