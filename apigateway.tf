@@ -47,6 +47,16 @@ resource "aws_api_gateway_integration" "api_root" {
   uri                     = aws_lambda_function.create_income.invoke_arn
 }
 
+resource "aws_api_gateway_integration" "api_root_get" {
+  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
+  resource_id = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
+  http_method = aws_api_gateway_method.api_root.http_method
+
+  integration_http_method = "GET"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.get_income.invoke_arn
+}
+
 ######################################################################
 # Create API Gateway's Income Resources
 ######################################################################
@@ -127,7 +137,7 @@ resource "aws_api_gateway_integration_response" "income_options_response" {
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
-    "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS, GET, POST'"
+    "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,GET,POST'"
     "method.response.header.Access-Control-Allow-Origin"      = "'https://finbudget.co.uk'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
