@@ -247,9 +247,9 @@ resource "aws_api_gateway_deployment" "api" {
     ]))
   }
 
-  # lifecycle {
-  #   create_before_destroy = true
-  # }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_api_gateway_stage" "prod" {
