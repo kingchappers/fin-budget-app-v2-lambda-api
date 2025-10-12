@@ -47,16 +47,6 @@ resource "aws_api_gateway_integration" "api_root" {
   uri                     = aws_lambda_function.create_income.invoke_arn
 }
 
-resource "aws_api_gateway_integration" "api_root_get" {
-  rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
-  resource_id = aws_api_gateway_rest_api.fin_budget_api.root_resource_id
-  http_method = aws_api_gateway_method.api_root.http_method
-
-  integration_http_method = "GET"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.get_income.invoke_arn
-}
-
 ######################################################################
 # Create API Gateway's Income Resources
 ######################################################################
@@ -195,6 +185,7 @@ resource "aws_api_gateway_method" "income_get_method" {
 
   request_parameters = {
     "method.request.header.Authorization" = true
+    "method.request.header.UserId"        = true
   }
 }
 
