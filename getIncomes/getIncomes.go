@@ -126,7 +126,7 @@ func main() {
 		}
 
 		// Only allow GET method
-		if r.Method != http.MethodGet {
+		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
