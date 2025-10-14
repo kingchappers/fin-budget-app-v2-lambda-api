@@ -88,7 +88,7 @@ resource "aws_api_gateway_method" "options_method" {
   for_each = local.api_endpoints
   depends_on = [
     aws_api_gateway_rest_api.fin_budget_api,
-    aws_api_gateway_resource.api_resources[each.key]
+    # aws_api_gateway_resource.api_resources[each.key].id
   ]
 
   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
@@ -116,7 +116,7 @@ resource "aws_api_gateway_method_response" "options_method_response" {
   for_each = local.api_endpoints
   depends_on = [
     aws_api_gateway_rest_api.fin_budget_api,
-    aws_api_gateway_resource.api_resources[each.key],
+    # aws_api_gateway_resource.api_resources[each.key],
     aws_api_gateway_method.options_method
   ]
 
@@ -139,7 +139,7 @@ resource "aws_api_gateway_method_response" "options_method_response" {
 
 resource "aws_api_gateway_integration_response" "options_response" {
   for_each = local.api_endpoints
-  depends_on = [aws_api_gateway_integration.options_response[each.key]]
+  # depends_on = [aws_api_gateway_integration.options_response[each.key]]
 
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.api_resources[each.key].id
@@ -179,7 +179,7 @@ resource "aws_api_gateway_method" "gateway_method" {
 
 resource "aws_api_gateway_integration" "api_post_integration" {
   for_each = local.api_endpoints
-  depends_on  = [aws_api_gateway_method.gateway_method[each.key]]
+  # depends_on  = [aws_api_gateway_method.gateway_method[each.key]]
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.api_resources[each.key].id
   http_method = aws_api_gateway_method.gateway_method[each.key].http_method
@@ -232,12 +232,12 @@ resource "aws_api_gateway_deployment" "api" {
   for_each = local.api_endpoints
 
   depends_on = [
-    aws_api_gateway_integration.options_integration[each.key],
-    aws_api_gateway_integration.api_post_integration[each.key],
+    # aws_api_gateway_integration.options_integration[each.key],
+    # aws_api_gateway_integration.api_post_integration[each.key],
     # aws_api_gateway_integration.income_api_get_integration,
     # aws_api_gateway_integration.income_options_integration,
     aws_api_gateway_integration.api_root,
-    aws_api_gateway_method.gateway_method[each.key],
+    # aws_api_gateway_method.gateway_method[each.key],
     # aws_api_gateway_method.income_get_method,
     aws_api_gateway_method.options_method,
     aws_api_gateway_method.api_root
