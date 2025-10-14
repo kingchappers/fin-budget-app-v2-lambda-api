@@ -139,9 +139,9 @@ func main() {
 		// }
 
 		// getIncomeParams.UserId = r.Header.Get("UserId")
-		getIncomeParams.UserId = r.URL.Query().Get("UserId")
+		getIncomeParams.UserId = r.URL.Query().Get("userId")
 		if getIncomeParams.UserId == "" {
-			http.Error(w, "Missing UserId header", http.StatusBadRequest)
+			http.Error(w, "Missing userId header", http.StatusBadRequest)
 			return
 		}
 
