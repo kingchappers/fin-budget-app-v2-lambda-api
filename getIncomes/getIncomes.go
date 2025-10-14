@@ -115,7 +115,7 @@ func main() {
 	http.HandleFunc("/income", func(w http.ResponseWriter, r *http.Request) {
 		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "https://finbudget.co.uk")
-		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,GET")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 
@@ -133,17 +133,17 @@ func main() {
 
 		// var incomes []Income
 		var getIncomeParams GetIncomeParams
-		// if err := json.NewDecoder(r.Body).Decode(&getIncomeParams); err != nil {
-		// 	http.Error(w, fmt.Sprintf("Failed to decode request body: %v", err), http.StatusBadRequest)
-		// 	return
-		// }
-
-		// getIncomeParams.UserId = r.Header.Get("UserId")
-		getIncomeParams.UserId = r.URL.Query().Get("userId")
-		if getIncomeParams.UserId == "" {
-			http.Error(w, "Missing userId header", http.StatusBadRequest)
+		if err := json.NewDecoder(r.Body).Decode(&getIncomeParams); err != nil {
+			http.Error(w, fmt.Sprintf("Failed to decode request body: %v", err), http.StatusBadRequest)
 			return
 		}
+
+		// getIncomeParams.UserId = r.Header.Get("UserId")
+		// getIncomeParams.UserId = r.URL.Query().Get("userId")
+		// if getIncomeParams.UserId == "" {
+		// 	http.Error(w, "Missing userId header", http.StatusBadRequest)
+		// 	return
+		// }
 
 		ctx := r.Context()
 		_, incomes, err := getIncomeItems(ctx, getIncomeParams)
