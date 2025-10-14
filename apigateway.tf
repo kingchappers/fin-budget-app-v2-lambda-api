@@ -126,7 +126,7 @@ resource "aws_api_gateway_integration_response" "income_options_response" {
   status_code = aws_api_gateway_method_response.income_options_response.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId'"
+    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
     "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,GET,POST'"
     "method.response.header.Access-Control-Allow-Origin"      = "'https://finbudget.co.uk'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
@@ -185,7 +185,6 @@ resource "aws_api_gateway_method" "income_get_method" {
 
   request_parameters = {
     "method.request.header.Authorization" = true
-    "method.request.header.UserId"        = true
   }
 }
 

@@ -116,7 +116,7 @@ func main() {
 		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "https://finbudget.co.uk")
 		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,GET")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,UserId")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		// Handle preflight OPTIONS request
@@ -138,7 +138,8 @@ func main() {
 		// 	return
 		// }
 
-		getIncomeParams.UserId = r.Header.Get("UserId")
+		// getIncomeParams.UserId = r.Header.Get("UserId")
+		getIncomeParams.UserId = r.URL.Query().Get("UserId")
 		if getIncomeParams.UserId == "" {
 			http.Error(w, "Missing UserId header", http.StatusBadRequest)
 			return
