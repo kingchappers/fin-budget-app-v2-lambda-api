@@ -229,7 +229,7 @@ resource "aws_api_gateway_integration" "api_post_integration" {
 ###################################################################### 
 
 resource "aws_api_gateway_deployment" "api" {
-  for_each = local.api_endpoints
+  # for_each = local.api_endpoints
 
   depends_on = [
     # aws_api_gateway_integration.options_integration[each.key],
@@ -249,32 +249,32 @@ resource "aws_api_gateway_deployment" "api" {
 
   triggers = {
     redeployment = sha1(join(",", [
-      jsonencode([
-      # REST API configuration
-      aws_api_gateway_rest_api.fin_budget_api.body,
+      # jsonencode([
+      # # REST API configuration
+      # aws_api_gateway_rest_api.fin_budget_api.body,
 
-      # Resources
-      aws_api_gateway_resource.api_resources[each.key].id,
-      # aws_api_gateway_resource.income_api_resource.id,
-      aws_api_gateway_resource.api_greedy_resource[each.key].id,
+      # # Resources
+      # aws_api_gateway_resource.api_resources[each.key].id,
+      # # aws_api_gateway_resource.income_api_resource.id,
+      # aws_api_gateway_resource.api_greedy_resource[each.key].id,
 
-      # Methods
-      aws_api_gateway_method.gateway_method[each.key].id,
-      # aws_api_gateway_method.income_post_method.id,
-      # aws_api_gateway_method.income_get_method.id,
-      aws_api_gateway_method.options_method[each.key].id,
+      # # Methods
+      # aws_api_gateway_method.gateway_method[each.key].id,
+      # # aws_api_gateway_method.income_post_method.id,
+      # # aws_api_gateway_method.income_get_method.id,
+      # aws_api_gateway_method.options_method[each.key].id,
 
-      # Integrations
-      aws_api_gateway_integration.api_post_integration[each.key].uri,
-      # aws_api_gateway_integration.income_api_post_integration.uri,
-      # aws_api_gateway_integration.income_api_get_integration.uri,
-      aws_api_gateway_integration.options_integration[each.key].id,
-      # aws_api_gateway_integration.income_options_integration.id,
+      # # Integrations
+      # aws_api_gateway_integration.api_post_integration[each.key].uri,
+      # # aws_api_gateway_integration.income_api_post_integration.uri,
+      # # aws_api_gateway_integration.income_api_get_integration.uri,
+      # aws_api_gateway_integration.options_integration[each.key].id,
+      # # aws_api_gateway_integration.income_options_integration.id,
 
-      # CORS configuration
-      aws_api_gateway_method_response.options_method_response[each.key].response_parameters,
-      # aws_api_gateway_integration_response.income_options_response.response_parameters,
-      ]),
+      # # CORS configuration
+      # aws_api_gateway_method_response.options_method_response[each.key].response_parameters,
+      # # aws_api_gateway_integration_response.income_options_response.response_parameters,
+      # ]),
       timestamp() # Add this to force deployment on every apply
     ]))
   }
