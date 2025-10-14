@@ -179,7 +179,8 @@ resource "aws_api_gateway_method" "income_get_method" {
 
   rest_api_id   = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id   = aws_api_gateway_resource.income_api_resource.id
-  http_method   = "GET"
+  # Lambda function can only be invoked via POST.
+  http_method   = "POST"
   authorization = "COGNITO_USER_POOLS"
   authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
 
@@ -194,7 +195,8 @@ resource "aws_api_gateway_integration" "income_api_get_integration" {
   resource_id = aws_api_gateway_resource.income_api_resource.id
   http_method = aws_api_gateway_method.income_get_method.http_method
 
-  integration_http_method = "GET"
+  # Lambda function can only be invoked via POST.
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.get_income.invoke_arn
 }
