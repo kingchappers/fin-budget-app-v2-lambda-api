@@ -101,7 +101,7 @@ resource "aws_api_gateway_integration" "options_integration" {
   for_each = local.api_endpoints
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   resource_id = aws_api_gateway_resource.api_resources[each.key].id
-  http_method = aws_api_gateway_method.options_method.http_method
+  http_method = aws_api_gateway_method.options_method[each.key].http_method
   type        = "MOCK"
   request_templates = {
     "application/json" = jsonencode(
