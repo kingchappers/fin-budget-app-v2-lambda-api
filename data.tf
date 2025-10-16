@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "api_gateway_assume_role" {
     actions = ["lambda:InvokeFunction"]
     resources = [
       aws_lambda_function.create_income.arn,
-      aws_lambda_function.get_income.arn
+      aws_lambda_function.get_incomes.arn
     ]
   }
 }

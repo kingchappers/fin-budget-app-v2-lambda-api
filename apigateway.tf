@@ -8,7 +8,7 @@ locals {
     getIncomes = {
       path = "getIncomes"
       function_name = "getIncomes"
-      lambda_function_arn = aws_lambda_function.get_income.invoke_arn
+      lambda_function_arn = aws_lambda_function.get_incomes.invoke_arn
     }
   }
 }
