@@ -26,7 +26,7 @@ resource "aws_lambda_permission" "create_income_api_permission" {
   principal     = "apigateway.amazonaws.com"
 
   # The following format is: arn:aws:execute-api:${region}:${account_id}:${api_id}/${stage_name}/${method}/${resource}
-  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/income"
+  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/createIncome"
 }
 
 ######################################################################
@@ -57,5 +57,5 @@ resource "aws_lambda_permission" "get_income_api_permissions" {
   principal     = "apigateway.amazonaws.com"
 
   # The following format is: arn:aws:execute-api:${region}:${account_id}:${api_id}/${stage_name}/${method}/${resource}
-  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/income"
+  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/getIncomes"
 }
