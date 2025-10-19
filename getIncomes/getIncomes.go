@@ -94,6 +94,7 @@ func getIncomeItems(ctx context.Context, getIncomeParams GetIncomeParams) (*dyna
 			return response, incomes, err
 		} else {
 			var incomePage []Income
+			log.Printf("Retrieved items: %v", response)
 			err = attributevalue.UnmarshalListOfMaps(response.Items, &incomePage)
 			if err != nil {
 				log.Printf("Failed to unmarshal query items: %v", err)
@@ -148,7 +149,7 @@ func main() {
 		ctx := r.Context()
 		_, incomes, err := getIncomeItems(ctx, getIncomeParams)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Failed to create income: %v", err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Failed to get incomes: %v", err), http.StatusInternalServerError)
 			return
 		}
 
