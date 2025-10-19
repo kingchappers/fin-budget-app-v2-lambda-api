@@ -97,7 +97,7 @@ func getIncomeItems(ctx context.Context, getIncomeParams GetIncomeParams) (*dyna
 			log.Printf("Retrieved items: %v", response)
 			err = attributevalue.UnmarshalListOfMaps(response.Items, &incomePage)
 			if err != nil {
-				log.Printf("Failed to unmarshal query items: %v", err)
+				log.Printf("Failed to unmarshal query items: %v\nresponse values given: %v", err, response)
 				return response, incomes, err
 			}
 			incomes = append(incomes, incomePage...)
