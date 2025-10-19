@@ -173,7 +173,6 @@ resource "aws_api_gateway_deployment" "api" {
   rest_api_id = aws_api_gateway_rest_api.fin_budget_api.id
   description = "Deployed at ${timestamp()}"
 
-
   triggers = {
     redeployment = sha1(join(",", [
       timestamp() # Add this to force deployment on every apply
@@ -196,8 +195,6 @@ resource "aws_api_gateway_stage" "prod" {
   }
 
   lifecycle {
-    ignore_changes = [
-      deployment_id
-    ]
+    create_before_destroy = true
   }
 }
