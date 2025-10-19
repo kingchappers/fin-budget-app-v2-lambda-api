@@ -27,7 +27,7 @@ type GetIncomeParams struct {
 }
 
 type Income struct {
-	IncomeDate     time.Time `json:"IncomeDate"`
+	IncomeDate     string `json:"IncomeDate"`
 	Company        string    `json:"Company"`
 	Amount         float64   `json:"Amount"`
 	IncomeCategory string    `json:"IncomeCategory"`
@@ -97,7 +97,7 @@ func getIncomeItems(ctx context.Context, getIncomeParams GetIncomeParams) (*dyna
 			log.Printf("Retrieved items: %v", response)
 			err = attributevalue.UnmarshalListOfMaps(response.Items, &incomePage)
 			if err != nil {
-				log.Printf("Failed to unmarshal query items: %v\nresponse values given: %v", err, response)
+				log.Printf("Failed to unmarshal query items: %v", err)
 				return response, incomes, err
 			}
 			incomes = append(incomes, incomePage...)
