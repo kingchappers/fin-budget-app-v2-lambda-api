@@ -28,7 +28,6 @@ type GetIncomeParams struct {
 
 type Income struct {
 	IncomeDate     string `json:"IncomeDate"`
-	Company        string    `json:"Company"`
 	Amount         float64   `json:"Amount"`
 	IncomeCategory string    `json:"IncomeCategory"`
 	Notes          string    `json:"Notes"`
@@ -138,13 +137,6 @@ func main() {
 			http.Error(w, fmt.Sprintf("Failed to decode request body: %v", err), http.StatusBadRequest)
 			return
 		}
-
-		// getIncomeParams.UserId = r.Header.Get("UserId")
-		// getIncomeParams.UserId = r.URL.Query().Get("userId")
-		// if getIncomeParams.UserId == "" {
-		// 	http.Error(w, "Missing userId header", http.StatusBadRequest)
-		// 	return
-		// }
 
 		ctx := r.Context()
 		_, incomes, err := getIncomeItems(ctx, getIncomeParams)
