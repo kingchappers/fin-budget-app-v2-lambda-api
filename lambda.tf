@@ -5,7 +5,7 @@
 resource "aws_lambda_function" "create_income" {
   filename      = "./createIncome/createIncome.zip"
   function_name = "createIncome"
-  role          = aws_iam_role.create_lambda_role.arn
+  role          = aws_iam_role.create_income_lambda_role.arn
 
   source_code_hash = filebase64sha256("./createIncome/createIncome.zip")
 
@@ -19,12 +19,43 @@ resource "aws_lambda_function" "create_income" {
   }
 }
 
-resource "aws_lambda_permission" "api" {
+resource "aws_lambda_permission" "create_income_api_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.create_income.function_name
   principal     = "apigateway.amazonaws.com"
 
   # The following format is: arn:aws:execute-api:${region}:${account_id}:${api_id}/${stage_name}/${method}/${resource}
-  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/income"
+  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/*/createIncome"
+}
+
+######################################################################
+# Get Income Lambda Function
+######################################################################
+
+resource "aws_lambda_function" "get_incomes" {
+  filename      = "./getIncomes/getIncomes.zip"
+  function_name = "getIncomes"
+  role          = aws_iam_role.get_income_lambda_role.arn
+
+  source_code_hash = filebase64sha256("./getIncomes/getIncomes.zip")
+
+  runtime = "provided.al2023"
+  handler = "bootstrap"
+
+  environment {
+    variables = {
+      INCOME_TABLE = aws_dynamodb_table.income_table.name
+    }
+  }
+}
+
+resource "aws_lambda_permission" "get_income_api_permissions" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.get_incomes.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  # The following format is: arn:aws:execute-api:${region}:${account_id}:${api_id}/${stage_name}/${method}/${resource}
+  source_arn = "${aws_api_gateway_rest_api.fin_budget_api.execution_arn}/*/*/getIncomes"
 }
