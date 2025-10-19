@@ -84,7 +84,7 @@ func createIncomeItem(ctx context.Context, income Income) (*dynamodb.PutItemOutp
 }
 
 func main() {
-	http.HandleFunc("/income", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/createIncome", func(w http.ResponseWriter, r *http.Request) {
 		// Enable CORS
 		w.Header().Set("Access-Control-Allow-Origin", "https://finbudget.co.uk")
 		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,POST")
